@@ -21,13 +21,11 @@
             - [ ] Create Host - 1 Hour
             - [ ] Update Host - 1 Hour
             - [ ] Delete Host - 1 Hour
-    - [ ] ReservationFileRepo - 4 Hours
-        - [ ] Read Reservation -  1 Hour
-            - Not sure if needs to be reimplemented, done in HostFileRepo
-        - [ ] Create Reservation - 1 Hour
-            - Search by guest and host last name (will have these features in domain)
-        - [ ] Update Reservation - 1 Hour
-        - [ ] Delete Reservation - 1 Hour
+    - [x] ReservationFileRepo - 4 Hours
+        - [x] Read Reservation -  1 Hour
+        - [x] Create Reservation - 1 Hour
+        - [x] Update Reservation - 1 Hour
+        - [x] Delete Reservation - 1 Hour
                 
 - [ ] Domain (including unit testing) (also included validation) - 13 Hours 30 Minutes
     - [ ] Setting up FileDouble repositories for testing - 1 Hour

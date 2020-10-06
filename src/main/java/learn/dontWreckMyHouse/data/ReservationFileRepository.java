@@ -126,6 +126,19 @@ public class ReservationFileRepository implements ReservationRepository {
         return false;
     }
 
+    @Override
+    public boolean deleteById(int reservationId, Host host) throws FileNotFoundException, DataException {
+        List<Reservation> allByHost = findReservationsForHost(host);
+        for(int i = 0; i < allByHost.size(); i++) {
+            if(allByHost.get(i).getId() == reservationId) {
+                allByHost.remove(i);
+                writeAll(allByHost, host);
+                return true;
+            }
+        }
+        return false;
+    }
+
     private String serialize(Reservation reservation) {
         return String.format("%s,%s,%s,%s,%s",
                 reservation.getId(),
