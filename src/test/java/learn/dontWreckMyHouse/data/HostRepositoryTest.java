@@ -18,13 +18,13 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class HostFileRepositoryTest {
+public class HostRepositoryTest {
 
     static final String SEED_PATH = "./data/hosts-seed.csv";
     static final String TEST_PATH = "./data/hosts-test.csv";
     static final String TEST_DIRECTORY_PATH = "./data/reservations-test";
 
-    HostFileRepository repository = new HostFileRepository(TEST_PATH, TEST_DIRECTORY_PATH);
+    HostFileRepository repository = new HostFileRepository(TEST_PATH, new ReservationFileRepository(TEST_DIRECTORY_PATH));
 
     @BeforeEach
     void setup() throws IOException {
@@ -80,18 +80,18 @@ public class HostFileRepositoryTest {
         assertEquals(11, repository.findAll().size());
     }
 
-    @Test
-    void shouldFindThirteenReservationsForHost() throws FileNotFoundException {
-        Host host = repository.findById("2e25f6f7-3ef0-4f38-8a1a-2b5eea81409c");
-        List<Reservation> reservations = repository.findReservationsForHost(host);
-        assertNotNull(reservations);
-        assertEquals(13, reservations.size());
-    }
-
-    @Test
-    void shouldReturnNull() throws FileNotFoundException {
-        Host host = repository.findById("3e25f6f7-3ef0-4f38-8a1a-2b5eea81409c");
-        List<Reservation> reservations = repository.findReservationsForHost(host);
-        assertNull(reservations);
-    }
+//    @Test
+//    void shouldFindThirteenReservationsForHost() throws FileNotFoundException {
+//        Host host = repository.findById("2e25f6f7-3ef0-4f38-8a1a-2b5eea81409c");
+//        List<Reservation> reservations = repository.findReservationsForHost(host);
+//        assertNotNull(reservations);
+//        assertEquals(13, reservations.size());
+//    }
+//
+//    @Test
+//    void shouldReturnNull() throws FileNotFoundException {
+//        Host host = repository.findById("3e25f6f7-3ef0-4f38-8a1a-2b5eea81409c");
+//        List<Reservation> reservations = repository.findReservationsForHost(host);
+//        assertNull(reservations);
+//    }
 }

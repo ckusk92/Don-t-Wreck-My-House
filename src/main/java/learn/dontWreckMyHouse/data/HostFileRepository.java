@@ -17,9 +17,17 @@ public class HostFileRepository implements HostRepository {
 
     private static final String HEADER = "id,last_name,email,phone,address,city,state,postal_code,standard_rate,weekend_rate";
     private final String filePath;
-    private final String reservationDirectory;
+    private final ReservationFileRepository reservationDirectory;
 
-    public HostFileRepository(@Value("./data/hosts.csv") String filePath, @Value("./data/reservations") String reservationDirectory) {
+//    public HostFileRepository(@Value("./data/hosts.csv") String filePath, @Value("./data/reservations") String reservationDirectory) {
+//
+//        this.filePath = filePath;
+//        this.reservationDirectory = reservationDirectory;
+//
+//    }
+
+
+    public HostFileRepository(@Value("./data/hosts.csv") String filePath, ReservationFileRepository reservationDirectory) {
 
         this.filePath = filePath;
         this.reservationDirectory = reservationDirectory;
@@ -72,49 +80,49 @@ public class HostFileRepository implements HostRepository {
         return host;
     }
 
-    @Override
-    public List<Reservation> findReservationsForHost(Host host) throws FileNotFoundException {
-
-        if(host == null) {
-            return null;
-        }
-
-        ArrayList<Reservation> reservations = new ArrayList<>();
-
-        String hostFileName = String.format("%s.csv", host.getId());
-
-        File dir = new File(reservationDirectory);
-        File[] directoryListing = dir.listFiles();
-        if(directoryListing != null) {
-            // Loop through every file in reservations directory
-            for(File child : directoryListing) {
-                try(BufferedReader reader = new BufferedReader(new FileReader(child))) {
-                    String fileName = child.getName();
-                    // When we hit a match
-                    if(fileName.equalsIgnoreCase(hostFileName)) {
-                        // Read header line first
-                        reader.readLine();
-                        for(String line = reader.readLine(); line != null; line = reader.readLine()) {
-                            String[] fields = line.split(",", -1);
-                            if(fields.length == 5) {
-                                reservations.add(deserializeReservation(fields));
-                            } else {
-                                return null;
-                            }
-                        }
-                        // Should only be one file per host
-                        break;
-                    }
-                } catch (IOException ex) {
-                    // don't throw on read
-                }
-            }
-        } else {
-            return null;
-        }
-
-        return reservations;
-    }
+//    @Override
+//    public List<Reservation> findReservationsForHost(Host host) throws FileNotFoundException {
+//
+//        if(host == null) {
+//            return null;
+//        }
+//
+//        ArrayList<Reservation> reservations = new ArrayList<>();
+//
+//        String hostFileName = String.format("%s.csv", host.getId());
+//
+//        File dir = new File(reservationDirectory);
+//        File[] directoryListing = dir.listFiles();
+//        if(directoryListing != null) {
+//            // Loop through every file in reservations directory
+//            for(File child : directoryListing) {
+//                try(BufferedReader reader = new BufferedReader(new FileReader(child))) {
+//                    String fileName = child.getName();
+//                    // When we hit a match
+//                    if(fileName.equalsIgnoreCase(hostFileName)) {
+//                        // Read header line first
+//                        reader.readLine();
+//                        for(String line = reader.readLine(); line != null; line = reader.readLine()) {
+//                            String[] fields = line.split(",", -1);
+//                            if(fields.length == 5) {
+//                                reservations.add(deserializeReservation(fields));
+//                            } else {
+//                                return null;
+//                            }
+//                        }
+//                        // Should only be one file per host
+//                        break;
+//                    }
+//                } catch (IOException ex) {
+//                    // don't throw on read
+//                }
+//            }
+//        } else {
+//            return null;
+//        }
+//
+//        return reservations;
+//    }
 
     private String serialize(Host host) {
         return String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s",

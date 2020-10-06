@@ -29,7 +29,7 @@
                 
 - [ ] Domain (including unit testing) (also included validation) - 13 Hours 30 Minutes
     - [ ] Setting up FileDouble repositories for testing - 1 Hour
-    - [ ] Response + Result - 30 minutes    
+    - [x] Response + Result - 30 minutes    
     - [ ] GuestService - 4 Hours   
         - [ ] Read Guest - 1 Hour
         - [ ] Stretch

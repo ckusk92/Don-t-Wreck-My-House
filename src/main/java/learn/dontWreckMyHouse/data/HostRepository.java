@@ -15,5 +15,5 @@ public interface HostRepository {
 
     Host add(Host host) throws DataException;
 
-    List<Reservation> findReservationsForHost(Host host) throws FileNotFoundException;
+  //  List<Reservation> findReservationsForHost(Host host) throws FileNotFoundException;
 }

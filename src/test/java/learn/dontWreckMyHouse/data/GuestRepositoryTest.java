@@ -13,7 +13,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class GuestFileRepositoryTest {
+public class GuestRepositoryTest {
 
     static final String SEED_PATH = "./data/guests-seed.csv";
     static final String TEST_PATH = "./data/guests-test.csv";
