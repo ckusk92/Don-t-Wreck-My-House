@@ -14,5 +14,7 @@ public interface ReservationRepository {
 
     Reservation add(Reservation reservation, Host host) throws FileNotFoundException, DataException;
 
+    public boolean update(Reservation reservation, Host host) throws DataException, FileNotFoundException;
+
     List<Reservation> findReservationsForHost(Host host) throws FileNotFoundException;
 }

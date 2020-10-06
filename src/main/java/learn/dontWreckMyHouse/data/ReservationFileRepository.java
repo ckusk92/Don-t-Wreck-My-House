@@ -73,7 +73,7 @@ public class ReservationFileRepository implements ReservationRepository {
         ArrayList<Reservation> reservations = new ArrayList<>();
 
         String hostFileName = String.format("%s.csv", host.getId());
-
+        boolean hostFileFound = false;
         File dir = new File(reservationDirectory);
         File[] directoryListing = dir.listFiles();
         if(directoryListing != null) {
@@ -81,6 +81,7 @@ public class ReservationFileRepository implements ReservationRepository {
             for(File child : directoryListing) {
                 try(BufferedReader reader = new BufferedReader(new FileReader(child))) {
                     String fileName = child.getName();
+
                     // When we hit a match
                     if(fileName.equalsIgnoreCase(hostFileName)) {
                         // Read header line first
@@ -94,6 +95,7 @@ public class ReservationFileRepository implements ReservationRepository {
                             }
                         }
                         // Should only be one file per host
+                        hostFileFound = true;
                         break;
                     }
                 } catch (IOException ex) {
@@ -104,7 +106,24 @@ public class ReservationFileRepository implements ReservationRepository {
             return null;
         }
 
-        return reservations;
+        if(!hostFileFound) {
+            return null;
+        } else {
+            return reservations;
+        }
+    }
+
+    @Override
+    public boolean update(Reservation reservation, Host host) throws DataException, FileNotFoundException {
+        List<Reservation> allByHost = findReservationsForHost(host);
+        for (int i = 0; i < allByHost.size(); i++) {
+            if (allByHost.get(i).getId() == reservation.getId()) {
+                allByHost.set(i, reservation);
+                writeAll(allByHost, host);
+                return true;
+            }
+        }
+        return false;
     }
 
     private String serialize(Reservation reservation) {
@@ -140,7 +159,7 @@ public class ReservationFileRepository implements ReservationRepository {
 
     protected void writeAll(List<Reservation> reservations, Host host) throws DataException {
 
-        String filePath = String.format("./data/reservations/%s.csv", host.getId());
+        String filePath = String.format("./data/reservations-test/%s.csv", host.getId());
 
         try (PrintWriter writer = new PrintWriter(filePath)) {
 

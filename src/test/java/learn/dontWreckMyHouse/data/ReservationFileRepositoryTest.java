@@ -43,28 +43,59 @@ public class ReservationFileRepositoryTest {
     }
 
     @Test
-    void shouldReturnZeroSizeList() throws FileNotFoundException {
+    void shouldReturnNull() throws FileNotFoundException {
         Host host = new Host();
         host.setId("2e25f6f7-3ef0-4f38-8a1a-2b5eea81409e");
         List<Reservation> reservations = repository.findReservationsForHost(host);
-        assertNotNull(reservations);
-        assertEquals(0, repository.findReservationsForHost(host).size());
+        assertNull(reservations);
     }
 
     @Test
     void shouldAdd() throws FileNotFoundException, DataException {
-       Reservation reservation = new Reservation();
-       reservation.setId(14);
-       reservation.setStartDate(LocalDate.of(2020,10,6));
-       reservation.setEndDate(LocalDate.of(2020,10,14));
-       reservation.setGuestId(40);
-       reservation.setTotal(BigDecimal.valueOf(500));
+        Reservation reservation = new Reservation();
+        reservation.setId(14);
+        reservation.setStartDate(LocalDate.of(2020, 10, 6));
+        reservation.setEndDate(LocalDate.of(2020, 10, 14));
+        reservation.setGuestId(40);
+        reservation.setTotal(BigDecimal.valueOf(500));
 
-       Host host = new Host();
-       host.setId("2e25f6f7-3ef0-4f38-8a1a-2b5eea81409c");
+        Host host = new Host();
+        host.setId("2e25f6f7-3ef0-4f38-8a1a-2b5eea81409c");
 
-       Reservation result = repository.add(reservation, host);
-       assertEquals(reservation, result);
-       assertEquals(13, repository.findReservationsForHost(host).size());
+        Reservation result = repository.add(reservation, host);
+        assertEquals(reservation, result);
+        assertEquals(13, repository.findReservationsForHost(host).size());
+    }
 
+    @Test
+    void shouldUpdate() throws DataException, FileNotFoundException {
+        Reservation reservation = new Reservation();
+        reservation.setId(5);
+        reservation.setStartDate(LocalDate.of(2015, 10, 6));
+        reservation.setEndDate(LocalDate.of(2015, 10, 14));
+        reservation.setGuestId(42);
+        reservation.setTotal(BigDecimal.valueOf(525));
+
+        Host host = new Host();
+        host.setId("2e25f6f7-3ef0-4f38-8a1a-2b5eea81409c");
+
+        assertTrue(repository.update(reservation, host));
+        assertEquals(42, repository.findReservationsForHost(host).get(4).getGuestId());
+    }
+
+    @Test
+    void shouldNotUpdate() throws DataException, FileNotFoundException {
+        Reservation reservation = new Reservation();
+        reservation.setId(200);
+        reservation.setStartDate(LocalDate.of(2015, 10, 6));
+        reservation.setEndDate(LocalDate.of(2015, 10, 14));
+        reservation.setGuestId(42);
+        reservation.setTotal(BigDecimal.valueOf(525));
+
+        Host host = new Host();
+        host.setId("2e25f6f7-3ef0-4f38-8a1a-2b5eea81409c");
+
+        assertFalse(repository.update(reservation, host));
+;
+    }
 }
