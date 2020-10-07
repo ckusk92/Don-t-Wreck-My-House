@@ -43,7 +43,7 @@
             - [ ] Update Host - 1 Hour
             - [ ] Delete Host - 1 Hour
     - [ ] ReservationService - 4 Hours
-        - [ ] Read Reservation - 1 Hour
+        - [x] Read Reservation - 1 Hour
         - [ ] Create Reservation - 1 Hour
         - [ ] Update Reservation - 1 Hour
         - [ ] Delete Reservation - 1 Hour    

@@ -1,8 +1,6 @@
 package learn.dontWreckMyHouse.domain;
 
-import learn.dontWreckMyHouse.data.GuestFileRepository;
-import learn.dontWreckMyHouse.data.HostFileRepository;
-import learn.dontWreckMyHouse.data.ReservationFileRepository;
+import learn.dontWreckMyHouse.data.*;
 import learn.dontWreckMyHouse.models.Host;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,7 +20,7 @@ public class HostServiceTest {
     static final String TEST_DIRECTORY_PATH = "./data/reservations-test";
     static final String GUEST_TEST_PATH = "./data/guests-test.csv";
 
-    HostService service = new HostService(new HostFileRepository(TEST_PATH, new ReservationFileRepository(TEST_DIRECTORY_PATH, new GuestFileRepository(GUEST_TEST_PATH))));
+    HostService service = new HostService(new HostRepositoryDouble(TEST_PATH, new ReservationRepositoryDouble(TEST_DIRECTORY_PATH, new GuestRepositoryDouble(GUEST_TEST_PATH))));
 
     @BeforeEach
     void setup() throws IOException {
