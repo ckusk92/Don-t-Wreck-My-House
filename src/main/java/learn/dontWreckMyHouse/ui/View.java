@@ -1,9 +1,12 @@
 package learn.dontWreckMyHouse.ui;
 
+import learn.dontWreckMyHouse.models.Guest;
 import learn.dontWreckMyHouse.models.Host;
 import learn.dontWreckMyHouse.models.Reservation;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,12 +33,47 @@ public class View {
         return MainMenuOption.fromValue(io.readInt(message, min, max));
     }
 
-
+    public Reservation makeReservation(Host host, Guest guest) {
+        Reservation reservation = new Reservation();
+        // Id will be set in repository
+        reservation.setStartDate(getStartDate());
+        reservation.setEndDate(getEndDate());
+        reservation.setGuest(guest);
+        // Total will be set in service
+        reservation.setTotal(BigDecimal.ZERO);
+        return reservation;
+    }
 
     public String getHostLastNamePrefix() {
         String string =  io.readRequiredString("Host last name starts with: ");
         // Allows user to type in lower case looking for last name
         return string.substring(0, 1).toUpperCase() + string.substring(1).toLowerCase();
+    }
+
+    public String getGuestLastNamePrefix() {
+        String string =  io.readRequiredString("Guest last name starts with: ");
+        // Allows user to type in lower case looking for last name
+        return string.substring(0, 1).toUpperCase() + string.substring(1).toLowerCase();
+    }
+
+    public Boolean getUserConfirmation(Reservation reservation) {
+        io.printf("Start: %s/%s/%s%nEnd: %s/%s/%s%nTotal: $%s%n",
+                reservation.getStartDate().getMonthValue(),
+                reservation.getStartDate().getDayOfMonth(),
+                reservation.getStartDate().getYear(),
+                reservation.getEndDate().getMonthValue(),
+                reservation.getEndDate().getDayOfMonth(),
+                reservation.getEndDate().getYear(),
+                reservation.getTotal());
+        return io.readBoolean("Is this okay? [y/n]: ");
+    }
+
+    public LocalDate getStartDate() {
+        return io.readLocalDate("Start (MM/dd/yyyy): ");
+    }
+
+    public LocalDate getEndDate() {
+        return io.readLocalDate("End (MM/dd/yyyy): ");
     }
 
     public Host chooseHost(List<Host> hosts) {
@@ -63,6 +101,31 @@ public class View {
         return hosts.get(index - 1);
     }
 
+    public Guest chooseGuest(List<Guest> guests) {
+        if (guests.size() == 0) {
+            io.println("No guests found");
+            return null;
+        }
+
+        int index = 1;
+        for (Guest guest : guests.stream().limit(25).collect(Collectors.toList())) {
+            io.printf("%s: %s%n", index++, guest.getLastName());
+        }
+        index--;
+
+        if (guests.size() > 25) {
+            io.println("More than 25 guests found. Showing first 25. Please refine your search.");
+        }
+        io.println("0: Exit");
+        String message = String.format("Select a guest by their index [0-%s]: ", index);
+
+        index = io.readInt(message, 0, index);
+        if (index <= 0) {
+            return null;
+        }
+        return guests.get(index - 1);
+    }
+
     public void enterToContinue() {
         io.readString("Press [Enter] to continue.");
     }
@@ -88,6 +151,10 @@ public class View {
         for (String message : messages) {
             io.println(message);
         }
+    }
+
+    public void displayUserDenialMessage() {
+        io.println("Reservation not created");
     }
 
     // Need

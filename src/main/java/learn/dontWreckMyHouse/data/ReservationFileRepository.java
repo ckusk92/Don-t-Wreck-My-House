@@ -59,6 +59,7 @@ public class ReservationFileRepository implements ReservationRepository {
                 .max()
                 .orElse(0) + 1;
 
+        reservation.setId(nextId);
         allForHost.add(reservation);
         writeAll(allForHost, host);
 
@@ -93,7 +94,7 @@ public class ReservationFileRepository implements ReservationRepository {
                             if(fields.length == 5) {
                                 reservations.add(deserializeReservation(fields));
                             } else {
-                                return null;
+                                continue;
                             }
                         }
                         // Should only be one file per host
@@ -174,7 +175,7 @@ public class ReservationFileRepository implements ReservationRepository {
 
     protected void writeAll(List<Reservation> reservations, Host host) throws DataException {
 
-        String filePath = String.format("./data/reservations-test/%s.csv", host.getId());
+        String filePath = String.format("./data/reservations/%s.csv", host.getId());
 
         try (PrintWriter writer = new PrintWriter(filePath)) {
 
