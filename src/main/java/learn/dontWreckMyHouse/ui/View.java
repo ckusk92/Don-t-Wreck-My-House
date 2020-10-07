@@ -1,8 +1,11 @@
 package learn.dontWreckMyHouse.ui;
 
+import learn.dontWreckMyHouse.models.Host;
+import learn.dontWreckMyHouse.models.Reservation;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class View {
@@ -27,6 +30,43 @@ public class View {
         return MainMenuOption.fromValue(io.readInt(message, min, max));
     }
 
+
+
+    public String getHostLastNamePrefix() {
+        String string =  io.readRequiredString("Host last name starts with: ");
+        // Allows user to type in lower case looking for last name
+        return string.substring(0, 1).toUpperCase() + string.substring(1).toLowerCase();
+    }
+
+    public Host chooseHost(List<Host> hosts) {
+        if (hosts.size() == 0) {
+            io.println("No hosts found");
+            return null;
+        }
+
+        int index = 1;
+        for (Host host : hosts.stream().limit(25).collect(Collectors.toList())) {
+            io.printf("%s: %s%n", index++, host.getLastName());
+        }
+        index--;
+
+        if (hosts.size() > 25) {
+            io.println("More than 25 hosts found. Showing first 25. Please refine your search.");
+        }
+        io.println("0: Exit");
+        String message = String.format("Select a host by their index [0-%s]: ", index);
+
+        index = io.readInt(message, 0, index);
+        if (index <= 0) {
+            return null;
+        }
+        return hosts.get(index - 1);
+    }
+
+    public void enterToContinue() {
+        io.readString("Press [Enter] to continue.");
+    }
+
     // display only
     public void displayHeader(String message) {
         io.println("");
@@ -47,6 +87,30 @@ public class View {
         displayHeader(success ? "Success" : "Error");
         for (String message : messages) {
             io.println(message);
+        }
+    }
+
+    // Need
+    public void displayReservations(List<Reservation> reservations, Host host) {
+
+        displayHeader(String.format("%s: %s, %s", host.getLastName(), host.getCity(), host.getState()));
+
+        if (reservations == null || reservations.isEmpty()) {
+            io.println("No reservations found.");
+            return;
+        }
+        for (Reservation reservation : reservations) {
+            io.printf("ID: %s, %s/%s/%s - %s/%s/%s, Guest: %s, %s, Email: %s%n",
+                    reservation.getId(),
+                    reservation.getStartDate().getMonthValue(),
+                    reservation.getStartDate().getDayOfMonth(),
+                    reservation.getStartDate().getYear(),
+                    reservation.getEndDate().getMonthValue(),
+                    reservation.getEndDate().getDayOfMonth(),
+                    reservation.getEndDate().getYear(),
+                    reservation.getGuest().getLastName(),
+                    reservation.getGuest().getFirstName(),
+                    reservation.getGuest().getEmail());
         }
     }
 }

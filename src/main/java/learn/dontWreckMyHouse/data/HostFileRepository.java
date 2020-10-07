@@ -153,28 +153,28 @@ public class HostFileRepository implements HostRepository {
         return result;
     }
 
-    // Needed as a Host will have an array of Reservations
-    private Reservation deserializeReservation(String[] fields) {
-        Reservation result = new Reservation();
-        result.setId(Integer.parseInt(fields[0]));
-
-        String[] startDateArray = fields[1].split("-", -1);
-        int startDateYear = Integer.parseInt(startDateArray[0]);
-        int startDateMonth = Integer.parseInt(startDateArray[1]);
-        int startDateDay = Integer.parseInt(startDateArray[2]);
-        result.setStartDate(LocalDate.of(startDateYear,startDateMonth,startDateDay));
-
-        String[] endDateArray = fields[2].split("-", -1);
-        int endDateYear = Integer.parseInt(endDateArray[0]);
-        int endDateMonth = Integer.parseInt(endDateArray[1]);
-        int endDateDay = Integer.parseInt(endDateArray[2]);
-        result.setStartDate(LocalDate.of(startDateYear,startDateMonth,startDateDay));
-
-        result.setGuestId(Integer.parseInt(fields[3]));
-        result.setTotal(BigDecimal.valueOf(Double.parseDouble(fields[4])));
-
-        return result;
-    }
+//    // Needed as a Host will have an array of Reservations
+//    private Reservation deserializeReservation(String[] fields) {
+//        Reservation result = new Reservation();
+//        result.setId(Integer.parseInt(fields[0]));
+//
+//        String[] startDateArray = fields[1].split("-", -1);
+//        int startDateYear = Integer.parseInt(startDateArray[0]);
+//        int startDateMonth = Integer.parseInt(startDateArray[1]);
+//        int startDateDay = Integer.parseInt(startDateArray[2]);
+//        result.setStartDate(LocalDate.of(startDateYear,startDateMonth,startDateDay));
+//
+//        String[] endDateArray = fields[2].split("-", -1);
+//        int endDateYear = Integer.parseInt(endDateArray[0]);
+//        int endDateMonth = Integer.parseInt(endDateArray[1]);
+//        int endDateDay = Integer.parseInt(endDateArray[2]);
+//        result.setStartDate(LocalDate.of(startDateYear,startDateMonth,startDateDay));
+//
+//        result.setGuestId(Integer.parseInt(fields[3]));
+//        result.setTotal(BigDecimal.valueOf(Double.parseDouble(fields[4])));
+//
+//        return result;
+//    }
 
     protected void writeAll(List<Host> hosts) throws DataException {
         try (PrintWriter writer = new PrintWriter(filePath)) {

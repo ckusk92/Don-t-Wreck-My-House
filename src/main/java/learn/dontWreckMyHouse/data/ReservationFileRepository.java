@@ -18,9 +18,11 @@ public class ReservationFileRepository implements ReservationRepository {
 
     private static final String HEADER = "id,start_date,end_date,guest_id,total";
     private final String reservationDirectory;
+    private final GuestRepository guestRepository;
 
-    public ReservationFileRepository(@Value("./data/reservations") String reservationDirectory) {
+    public ReservationFileRepository(@Value("./data/reservations") String reservationDirectory, GuestRepository guestRepository) {
         this.reservationDirectory = reservationDirectory;
+        this.guestRepository = guestRepository;
     }
 
 //    @Override
@@ -144,7 +146,7 @@ public class ReservationFileRepository implements ReservationRepository {
                 reservation.getId(),
                 String.format("%s-%s-%s", reservation.getStartDate().getYear(), reservation.getStartDate().getMonthValue(), reservation.getStartDate().getDayOfMonth()),
                 String.format("%s-%s-%s", reservation.getEndDate().getYear(), reservation.getEndDate().getMonthValue(), reservation.getEndDate().getDayOfMonth()),
-                reservation.getGuestId(),
+                reservation.getGuest().getId(),
                 reservation.getTotal().setScale(2, RoundingMode.HALF_UP));
     }
 
@@ -164,7 +166,7 @@ public class ReservationFileRepository implements ReservationRepository {
         int endDateDay = Integer.parseInt(endDateArray[2]);
         result.setEndDate(LocalDate.of(endDateYear,endDateMonth,endDateDay));
 
-        result.setGuestId(Integer.parseInt(fields[3]));
+        result.setGuest(guestRepository.findById(Integer.parseInt(fields[3])));
         result.setTotal(BigDecimal.valueOf(Double.parseDouble(fields[4])));
 
         return result;

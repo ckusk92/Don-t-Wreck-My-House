@@ -1,5 +1,6 @@
 package learn.dontWreckMyHouse.domain;
 
+import learn.dontWreckMyHouse.data.GuestFileRepository;
 import learn.dontWreckMyHouse.data.HostFileRepository;
 import learn.dontWreckMyHouse.data.ReservationFileRepository;
 import learn.dontWreckMyHouse.models.Host;
@@ -19,9 +20,9 @@ public class HostServiceTest {
     static final String SEED_PATH = "./data/hosts-seed.csv";
     static final String TEST_PATH = "./data/hosts-test.csv";
     static final String TEST_DIRECTORY_PATH = "./data/reservations-test";
+    static final String GUEST_TEST_PATH = "./data/guests-test.csv";
 
-
-    HostService service = new HostService(new HostFileRepository(TEST_PATH, new ReservationFileRepository(TEST_DIRECTORY_PATH)));
+    HostService service = new HostService(new HostFileRepository(TEST_PATH, new ReservationFileRepository(TEST_DIRECTORY_PATH, new GuestFileRepository(GUEST_TEST_PATH))));
 
     @BeforeEach
     void setup() throws IOException {

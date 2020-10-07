@@ -8,7 +8,7 @@ public class Reservation {
     private int id;
     private LocalDate startDate;
     private LocalDate endDate;
-    private int guestId;
+    private Guest guest;
     private BigDecimal total;
 
     public int getId() {
@@ -35,12 +35,12 @@ public class Reservation {
         this.endDate = endDate;
     }
 
-    public int getGuestId() {
-        return guestId;
+    public Guest getGuest() {
+        return guest;
     }
 
-    public void setGuestId(int guestId) {
-        this.guestId = guestId;
+    public void setGuest(Guest guest) {
+        this.guest = guest;
     }
 
     public BigDecimal getTotal() {

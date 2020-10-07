@@ -1,5 +1,6 @@
 package learn.dontWreckMyHouse.data;
 
+import learn.dontWreckMyHouse.models.Guest;
 import learn.dontWreckMyHouse.models.Host;
 import learn.dontWreckMyHouse.models.Reservation;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,8 +24,9 @@ public class ReservationRepositoryTest {
     static final String SEED_FILE_PATH = "./data/reservations-test/2e25f6f7-3ef0-4f38-8a1a-2b5eea81409d.csv";
     static final String TEST_FILE_PATH = "./data/reservations-test/2e25f6f7-3ef0-4f38-8a1a-2b5eea81409c.csv";
     static final String TEST_DIR_PATH = "./data/reservations-test";
+    static final String GUEST_TEST_PATH = "./data/guests-test";
 
-    ReservationFileRepository repository = new ReservationFileRepository(TEST_DIR_PATH);
+    ReservationFileRepository repository = new ReservationFileRepository(TEST_DIR_PATH, new GuestFileRepository(GUEST_TEST_PATH));
 
     @BeforeEach
     void setup() throws IOException {
@@ -52,11 +54,14 @@ public class ReservationRepositoryTest {
 
     @Test
     void shouldAdd() throws FileNotFoundException, DataException {
+        Guest guest = new Guest();
+        guest.setId(40);
+
         Reservation reservation = new Reservation();
         reservation.setId(14);
         reservation.setStartDate(LocalDate.of(2020, 10, 6));
         reservation.setEndDate(LocalDate.of(2020, 10, 14));
-        reservation.setGuestId(40);
+        reservation.setGuest(guest);
         reservation.setTotal(BigDecimal.valueOf(500));
 
         Host host = new Host();
@@ -69,27 +74,33 @@ public class ReservationRepositoryTest {
 
     @Test
     void shouldUpdate() throws DataException, FileNotFoundException {
+        Guest guest = new Guest();
+        guest.setId(42);
+
         Reservation reservation = new Reservation();
         reservation.setId(5);
         reservation.setStartDate(LocalDate.of(2015, 10, 6));
         reservation.setEndDate(LocalDate.of(2015, 10, 14));
-        reservation.setGuestId(42);
+        reservation.setGuest(guest);
         reservation.setTotal(BigDecimal.valueOf(525));
 
         Host host = new Host();
         host.setId("2e25f6f7-3ef0-4f38-8a1a-2b5eea81409c");
 
         assertTrue(repository.update(reservation, host));
-        assertEquals(42, repository.findReservationsForHost(host).get(4).getGuestId());
+        assertEquals(42, repository.findReservationsForHost(host).get(4).getGuest().getId());
     }
 
     @Test
     void shouldNotUpdate() throws DataException, FileNotFoundException {
+        Guest guest = new Guest();
+        guest.setId(42);
+
         Reservation reservation = new Reservation();
         reservation.setId(200);
         reservation.setStartDate(LocalDate.of(2015, 10, 6));
         reservation.setEndDate(LocalDate.of(2015, 10, 14));
-        reservation.setGuestId(42);
+        reservation.setGuest(guest);
         reservation.setTotal(BigDecimal.valueOf(525));
 
         Host host = new Host();
