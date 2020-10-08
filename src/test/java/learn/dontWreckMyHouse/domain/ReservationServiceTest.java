@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -131,5 +132,46 @@ public class ReservationServiceTest {
         List<Reservation> guestReservations = service.findForHostAndGuest(host, guest);
         assertNotNull(guestReservations);
         assertEquals(0, guestReservations.size());
+    }
+
+    @Test
+    void shouldUpdate() throws FileNotFoundException, DataException {
+        Host host = new Host();
+        host.setId("2e25f6f7-3ef0-4f38-8a1a-2b5eea81409c");
+        host.setStandardRate(BigDecimal.valueOf(20));
+        host.setWeekendRate(BigDecimal.valueOf(30));
+        Guest guest = new Guest();
+        guest.setId(3);
+
+        Reservation reservation = new Reservation();
+        reservation.setId(1);
+        reservation.setStartDate(LocalDate.of(2020,10,14));
+        reservation.setEndDate(LocalDate.of(2020,10,16));
+        reservation.setGuest(guest);
+
+        Result<Reservation> result = service.update(reservation, host);
+        assertNotNull(result);
+        assertEquals(14, result.getPayload().getStartDate().getDayOfMonth());
+        assertEquals(16, result.getPayload().getEndDate().getDayOfMonth());
+        assertEquals(BigDecimal.valueOf(40.00).setScale(2, RoundingMode.HALF_UP), result.getPayload().getTotal().setScale(2, RoundingMode.HALF_UP));
+    }
+
+    @Test
+    void shouldNotUpdate() throws FileNotFoundException, DataException {
+        Host host = new Host();
+        host.setId("2e25f6f7-3ef0-4f38-8a1a-2b5eea81409c");
+        host.setStandardRate(BigDecimal.valueOf(20));
+        host.setWeekendRate(BigDecimal.valueOf(30));
+        Guest guest = new Guest();
+        guest.setId(3);
+
+        Reservation reservation = new Reservation();
+        reservation.setId(20);
+        reservation.setStartDate(LocalDate.of(2020,10,14));
+        reservation.setEndDate(LocalDate.of(2020,10,16));
+        reservation.setGuest(guest);
+
+        Result<Reservation> result = service.update(reservation, host);
+        assertFalse(result.isSuccess());
     }
 }

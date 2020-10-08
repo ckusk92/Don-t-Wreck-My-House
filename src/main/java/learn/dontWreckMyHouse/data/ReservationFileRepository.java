@@ -147,7 +147,7 @@ public class ReservationFileRepository implements ReservationRepository {
         result.setEndDate(LocalDate.of(endDateYear,endDateMonth,endDateDay));
 
         result.setGuest(guestRepository.findById(Integer.parseInt(fields[3])));
-        result.setTotal(BigDecimal.valueOf(Double.parseDouble(fields[4])));
+        result.setTotal(BigDecimal.valueOf(Double.parseDouble(fields[4])).setScale(2, RoundingMode.HALF_UP));
 
         return result;
     }
