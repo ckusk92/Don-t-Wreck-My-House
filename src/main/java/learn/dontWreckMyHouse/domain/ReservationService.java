@@ -13,6 +13,7 @@ import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,7 +35,6 @@ public class ReservationService {
         return sorted;
     }
 
-    //public Result<Reservation> add(Guest guest, Host host, LocalDate start, LocalDate end) throws FileNotFoundException {
     public Result<Reservation> add(Reservation reservation, Host host) throws FileNotFoundException, DataException {
 
         List<Reservation> hostReservations = reservationsForHost(host);
@@ -74,6 +74,17 @@ public class ReservationService {
         return result;
     }
 
+    public List<Reservation> findForHostAndGuest(Host host, Guest guest) throws FileNotFoundException {
+        List<Reservation> hostReservations = reservationsForHost(host);
+        ArrayList<Reservation> guestReservations = new ArrayList<>();
+
+        for(Reservation reservation : hostReservations) {
+            if(reservation.getGuest().getId() == guest.getId()) {
+                guestReservations.add(reservation);
+            }
+        }
+        return guestReservations;
+    }
 
     // Helper functions
 

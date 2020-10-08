@@ -104,4 +104,32 @@ public class ReservationServiceTest {
         Result<Reservation> result = service.add(reservation, host);
         assertFalse(result.isSuccess());
     }
+
+    @Test
+    void shouldFindThreeReservationsForGuest() throws FileNotFoundException {
+        Host host = new Host();
+        host.setId("2e25f6f7-3ef0-4f38-8a1a-2b5eea81409c");
+        host.setStandardRate(BigDecimal.valueOf(20));
+        host.setWeekendRate(BigDecimal.valueOf(30));
+        Guest guest = new Guest();
+        guest.setId(2);
+
+        List<Reservation> guestReservations = service.findForHostAndGuest(host, guest);
+        assertNotNull(guestReservations);
+        assertEquals(3, guestReservations.size());
+    }
+
+    @Test
+    void shouldFindNoReservations() throws FileNotFoundException {
+        Host host = new Host();
+        host.setId("2e25f6f7-3ef0-4f38-8a1a-2b5eea81409c");
+        host.setStandardRate(BigDecimal.valueOf(20));
+        host.setWeekendRate(BigDecimal.valueOf(30));
+        Guest guest = new Guest();
+        guest.setId(9);
+
+        List<Reservation> guestReservations = service.findForHostAndGuest(host, guest);
+        assertNotNull(guestReservations);
+        assertEquals(0, guestReservations.size());
+    }
 }

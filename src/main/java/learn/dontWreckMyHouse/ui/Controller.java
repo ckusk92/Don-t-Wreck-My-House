@@ -97,10 +97,18 @@ public class Controller {
 
     private void editReservation() {
         view.displayHeader(MainMenuOption.EDIT_A_RESERVATION.getMessage());
+        Guest guest = getGuest();
+        if(guest == null) { return; }
+        Host host = getHost();
+        if(host == null) { return; }
     }
 
     private void cancelReservation() {
         view.displayHeader(MainMenuOption.CANCEL_A_RESERVATION.getMessage());
+        Guest guest = getGuest();
+        if(guest == null) { return; }
+        Host host = getHost();
+        if(host == null) { return; }
     }
 
     // Support Methods

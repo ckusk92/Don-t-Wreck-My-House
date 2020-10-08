@@ -44,6 +44,7 @@ public class View {
         return reservation;
     }
 
+
     public String getHostLastNamePrefix() {
         String string =  io.readRequiredString("Host last name starts with: ");
         // Allows user to type in lower case looking for last name
