@@ -35,6 +35,7 @@ public class ReservationRepositoryDouble implements ReservationRepository{
                 .max()
                 .orElse(0) + 1;
 
+        reservation.setId(nextId);
         allForHost.add(reservation);
         writeAll(allForHost, host);
 
