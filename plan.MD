@@ -44,8 +44,8 @@
             - [ ] Delete Host - 1 Hour
     - [ ] ReservationService - 4 Hours
         - [x] Read Reservation - 1 Hour
-        - [ ] Create Reservation - 1 Hour
-        - [ ] Update Reservation - 1 Hour
+        - [x] Create Reservation - 1 Hour
+        - [x] Update Reservation - 1 Hour
         - [ ] Delete Reservation - 1 Hour    
         
 - [ ] UI - 7 Hours

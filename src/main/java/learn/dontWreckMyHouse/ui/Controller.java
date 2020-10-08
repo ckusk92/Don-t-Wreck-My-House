@@ -95,20 +95,43 @@ public class Controller {
         }
     }
 
-    private void editReservation() {
+    private void editReservation() throws FileNotFoundException, DataException {
         view.displayHeader(MainMenuOption.EDIT_A_RESERVATION.getMessage());
         Guest guest = getGuest();
         if(guest == null) { return; }
         Host host = getHost();
         if(host == null) { return; }
+        // Get all reservations for host
+        List<Reservation> matchingReservations = reservationService.findForHostAndGuest(host, guest);
+        // Have user pick appropriate one
+        Reservation updatedReservation = view.chooseReservation(matchingReservations, host);
+        updatedReservation = view.updateReservation(updatedReservation);
+        Result<Reservation> result = reservationService.update(updatedReservation, host);
+        if (!result.isSuccess()) {
+            view.displayStatus(false, result.getErrorMessages());
+        } else {
+            // Display the info to user and ask if ok
+            if(view.getUserConfirmation(updatedReservation)) {
+                String successMessage = String.format("Reservation %s edited.", result.getPayload().getId());
+                view.displayStatus(true, successMessage);
+            } else {
+                // Call delete function on newly created reservation
+                view.displayUserDenialMessage();
+            }
+        }
     }
 
-    private void cancelReservation() {
+    private void cancelReservation() throws FileNotFoundException {
         view.displayHeader(MainMenuOption.CANCEL_A_RESERVATION.getMessage());
         Guest guest = getGuest();
         if(guest == null) { return; }
         Host host = getHost();
         if(host == null) { return; }
+
+        // Get all reservations for host
+        List<Reservation> matchingReservations = reservationService.findForHostAndGuest(host, guest);
+        // Have user pick appropriate one
+        Reservation updatedReservation = view.chooseReservation(matchingReservations, host);
     }
 
     // Support Methods

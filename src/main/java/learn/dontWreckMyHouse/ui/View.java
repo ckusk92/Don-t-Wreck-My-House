@@ -44,6 +44,22 @@ public class View {
         return reservation;
     }
 
+    public Reservation updateReservation(Reservation reservation) {
+        String headerString = String.format("Editing Reservation %s", reservation.getId());
+        displayHeader(headerString);
+        //Reservation updatedDates = reservation;
+        LocalDate startDate = editStartDate(reservation.getStartDate());
+        // Indicates user hit enter instead of typing a value
+        if(startDate != LocalDate.of(1000,1,1)) {
+            reservation.setStartDate(startDate);
+        }
+        LocalDate endDate = editEndDate(reservation.getEndDate());
+        // Indicates user hit enter instead of typing a value
+        if(endDate != LocalDate.of(1000,1,1)) {
+            reservation.setEndDate(endDate);
+        }
+        return reservation;
+    }
 
     public String getHostLastNamePrefix() {
         String string =  io.readRequiredString("Host last name starts with: ");
@@ -58,6 +74,7 @@ public class View {
     }
 
     public Boolean getUserConfirmation(Reservation reservation) {
+        displayHeader("Summary");
         io.printf("Start: %s/%s/%s%nEnd: %s/%s/%s%nTotal: $%s%n",
                 reservation.getStartDate().getMonthValue(),
                 reservation.getStartDate().getDayOfMonth(),
@@ -75,6 +92,16 @@ public class View {
 
     public LocalDate getEndDate() {
         return io.readLocalDate("End (MM/dd/yyyy): ");
+    }
+
+    public LocalDate editStartDate(LocalDate currentStartDate) {
+        String prompt = String.format("Start (%s/%s/%s): ", currentStartDate.getMonthValue(), currentStartDate.getDayOfMonth(), currentStartDate.getYear());
+        return io.readLocalDate(prompt);
+    }
+
+    public LocalDate editEndDate(LocalDate currentEndDate) {
+        String prompt = String.format("End (%s/%s/%s): ", currentEndDate.getMonthValue(), currentEndDate.getDayOfMonth(), currentEndDate.getYear());
+        return io.readLocalDate(prompt);
     }
 
     public Host chooseHost(List<Host> hosts) {
@@ -127,6 +154,22 @@ public class View {
         return guests.get(index - 1);
     }
 
+    public Reservation chooseReservation(List<Reservation> reservations, Host host) {
+        displayReservations(reservations, host);
+        boolean validChoice = false;
+        while(!validChoice) {
+            int reservationId = io.readInt("Reservation ID: ");
+            for (Reservation reservation : reservations) {
+                if (reservationId == reservation.getId()) {
+                    return reservation;
+                }
+            }
+            io.println("Please choose a valid Reservation Id from list above");
+        }
+        // Should never reach this statement
+        return null;
+    }
+
     public void enterToContinue() {
         io.readString("Press [Enter] to continue.");
     }
@@ -158,7 +201,7 @@ public class View {
         io.println("Reservation not created");
     }
 
-    // Need
+
     public void displayReservations(List<Reservation> reservations, Host host) {
 
         displayHeader(String.format("%s: %s, %s", host.getLastName(), host.getCity(), host.getState()));

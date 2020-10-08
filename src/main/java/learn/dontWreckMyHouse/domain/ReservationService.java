@@ -64,12 +64,62 @@ public class ReservationService {
             }
         }
 
+        // Make sure reservations are only in the future
+
         if(!result.isSuccess()) {
             return result;
         }
 
         reservation.setTotal(calculateTotal(reservation, host));
         result.setPayload(repository.add(reservation, host));
+
+        return result;
+    }
+
+    public Result<Reservation> update(Reservation reservation, Host host) throws FileNotFoundException, DataException {
+
+        List<Reservation> hostReservations = reservationsForHost(host);
+        Result<Reservation> result = new Result<>();
+
+        if(reservation == null) {
+            result.addErrorMessage("Reservation must not be null");
+            return result;
+        }
+
+        if(host == null) {
+            result.addErrorMessage("Host must not be null");
+            return result;
+        }
+
+        if(reservation.getGuest() == null) {
+            result.addErrorMessage("Guest is required");
+        }
+
+        // Also make sure start date is before end date and one day apart
+        if(reservation.getStartDate().compareTo(reservation.getEndDate()) >= 0) {
+            result.addErrorMessage("End date must be after start date");
+        }
+
+        // Check that there is no overlapping dates
+        for(Reservation existingReservation : hostReservations) {
+            if(existingReservation.getId() != reservation.getId()) {
+                if ((reservation.getStartDate().compareTo(existingReservation.getStartDate()) >= 0 &&
+                        reservation.getStartDate().compareTo(existingReservation.getEndDate()) <= 0) ||
+                        (reservation.getEndDate().compareTo(existingReservation.getStartDate()) >= 0 &&
+                                reservation.getEndDate().compareTo(existingReservation.getEndDate()) <= 0)) {
+                    result.addErrorMessage("Dates must not overlap with existing reservations");
+                }
+            }
+        }
+
+        // Make sure reservations are only in the future
+
+        if(!result.isSuccess()) {
+            return result;
+        }
+
+        reservation.setTotal(calculateTotal(reservation, host));
+        result.setPayload(repository.update(reservation, host));
 
         return result;
     }
@@ -92,7 +142,8 @@ public class ReservationService {
         LocalDate iterator = reservation.getStartDate();
         BigDecimal total = BigDecimal.ZERO;
 
-        while(iterator.compareTo(reservation.getEndDate()) <= 0) {
+        // Start date inclusive end date exclusive
+        while(iterator.compareTo(reservation.getEndDate()) < 0) {
             if(iterator.getDayOfWeek() == DayOfWeek.SATURDAY || iterator.getDayOfWeek() == DayOfWeek.SUNDAY) {
                 total = total.add(host.getWeekendRate());
             } else {

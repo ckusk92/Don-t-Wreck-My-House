@@ -43,16 +43,16 @@ public class ReservationRepositoryDouble implements ReservationRepository{
     }
 
     @Override
-    public boolean update(Reservation reservation, Host host) throws DataException, FileNotFoundException {
+    public Reservation update(Reservation reservation, Host host) throws DataException, FileNotFoundException {
         List<Reservation> allByHost = findReservationsForHost(host);
         for (int i = 0; i < allByHost.size(); i++) {
             if (allByHost.get(i).getId() == reservation.getId()) {
                 allByHost.set(i, reservation);
                 writeAll(allByHost, host);
-                return true;
+                return reservation;
             }
         }
-        return false;
+        return null;
     }
 
     @Override

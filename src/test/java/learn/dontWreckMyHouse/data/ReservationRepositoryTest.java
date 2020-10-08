@@ -24,7 +24,7 @@ public class ReservationRepositoryTest {
     static final String SEED_FILE_PATH = "./data/reservations-test/2e25f6f7-3ef0-4f38-8a1a-2b5eea81409d.csv";
     static final String TEST_FILE_PATH = "./data/reservations-test/2e25f6f7-3ef0-4f38-8a1a-2b5eea81409c.csv";
     static final String TEST_DIR_PATH = "./data/reservations-test";
-    static final String GUEST_TEST_PATH = "./data/guests-test";
+    static final String GUEST_TEST_PATH = "./data/guests-test.csv";
 
     ReservationFileRepository repository = new ReservationFileRepository(TEST_DIR_PATH, new GuestFileRepository(GUEST_TEST_PATH));
 
@@ -75,7 +75,7 @@ public class ReservationRepositoryTest {
     @Test
     void shouldUpdate() throws DataException, FileNotFoundException {
         Guest guest = new Guest();
-        guest.setId(42);
+        guest.setId(8);
 
         Reservation reservation = new Reservation();
         reservation.setId(5);
@@ -87,8 +87,9 @@ public class ReservationRepositoryTest {
         Host host = new Host();
         host.setId("2e25f6f7-3ef0-4f38-8a1a-2b5eea81409c");
 
-        assertTrue(repository.update(reservation, host));
-        assertEquals(42, repository.findReservationsForHost(host).get(4).getGuest().getId());
+        Reservation result = repository.update(reservation, host);
+        assertEquals(result, reservation);
+        assertEquals(8, repository.findReservationsForHost(host).get(4).getGuest().getId());
     }
 
     @Test
@@ -106,7 +107,7 @@ public class ReservationRepositoryTest {
         Host host = new Host();
         host.setId("2e25f6f7-3ef0-4f38-8a1a-2b5eea81409c");
 
-        assertFalse(repository.update(reservation, host));;
+        assertNull(repository.update(reservation, host));;
     }
 
     @Test

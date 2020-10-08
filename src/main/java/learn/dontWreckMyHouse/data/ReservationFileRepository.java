@@ -25,47 +25,6 @@ public class ReservationFileRepository implements ReservationRepository {
         this.guestRepository = guestRepository;
     }
 
-//    @Override
-//    public Reservation add(int guestId, Host host, LocalDate startDate, LocalDate endDate, BigDecimal total) throws FileNotFoundException, DataException {
-//        Reservation reservation = new Reservation();
-//
-//        List<Reservation> allForHost = findReservationsForHost(host);
-//
-//        int nextId = allForHost.stream()
-//                .mapToInt(Reservation::getId)
-//                .max()
-//                .orElse(0) + 1;
-//        reservation.setGuestId(nextId);
-//        reservation.setStartDate(startDate);
-//        reservation.setEndDate(endDate);
-//        reservation.setGuestId(guestId);
-//        reservation.setTotal(total);
-//
-//        allForHost.add(reservation);
-//        writeAll(allForHost, host);
-//        return reservation;
-//    }
-
-    @Override
-    public Reservation add(Reservation reservation, Host host) throws FileNotFoundException, DataException {
-        if (reservation == null) {
-            return null;
-        }
-
-        List<Reservation> allForHost = findReservationsForHost(host);
-
-        int nextId = allForHost.stream()
-                .mapToInt(Reservation::getId)
-                .max()
-                .orElse(0) + 1;
-
-        reservation.setId(nextId);
-        allForHost.add(reservation);
-        writeAll(allForHost, host);
-
-        return reservation;
-    }
-
     @Override
     public List<Reservation> findReservationsForHost(Host host) throws FileNotFoundException {
 
@@ -117,16 +76,36 @@ public class ReservationFileRepository implements ReservationRepository {
     }
 
     @Override
-    public boolean update(Reservation reservation, Host host) throws DataException, FileNotFoundException {
+    public Reservation add(Reservation reservation, Host host) throws FileNotFoundException, DataException {
+        if (reservation == null) {
+            return null;
+        }
+
+        List<Reservation> allForHost = findReservationsForHost(host);
+
+        int nextId = allForHost.stream()
+                .mapToInt(Reservation::getId)
+                .max()
+                .orElse(0) + 1;
+
+        reservation.setId(nextId);
+        allForHost.add(reservation);
+        writeAll(allForHost, host);
+
+        return reservation;
+    }
+
+    @Override
+    public Reservation update(Reservation reservation, Host host) throws DataException, FileNotFoundException {
         List<Reservation> allByHost = findReservationsForHost(host);
         for (int i = 0; i < allByHost.size(); i++) {
             if (allByHost.get(i).getId() == reservation.getId()) {
                 allByHost.set(i, reservation);
                 writeAll(allByHost, host);
-                return true;
+                return reservation;
             }
         }
-        return false;
+        return null;
     }
 
     @Override
@@ -175,7 +154,8 @@ public class ReservationFileRepository implements ReservationRepository {
 
     protected void writeAll(List<Reservation> reservations, Host host) throws DataException {
 
-        String filePath = String.format("./data/reservations/%s.csv", host.getId());
+        // Need it to write to reservations-test for testing function
+        String filePath = String.format("%s/%s.csv", reservationDirectory, host.getId());
 
         try (PrintWriter writer = new PrintWriter(filePath)) {
 
