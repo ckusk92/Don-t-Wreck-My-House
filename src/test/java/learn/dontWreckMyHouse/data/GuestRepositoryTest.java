@@ -67,4 +67,34 @@ public class GuestRepositoryTest {
         assertEquals(guest, result);
         assertEquals(11, repository.findAll().size());
     }
+
+    @Test
+    void shouldUpdate() throws DataException {
+        Guest guest = new Guest();
+        guest.setFirstName("Charles");
+        guest.setLastName("Kusk");
+        guest.setEmail("fake@fake.com");
+        guest.setPhone("(398) 8675309");
+        guest.setState("WI");
+        guest.setId(1);
+
+        Guest result = repository.update(guest);
+        assertEquals(guest, result);
+        assertEquals("Charles", repository.findById(1).getFirstName());
+    }
+
+    @Test
+    void shouldNotUpdate() throws DataException {
+        Guest guest = new Guest();
+        guest.setFirstName("Charles");
+        guest.setLastName("Kusk");
+        guest.setEmail("fake@fake.com");
+        guest.setPhone("(398) 8675309");
+        guest.setState("WI");
+        guest.setId(1000);
+
+        Guest result = repository.update(guest);
+        assertNull(result);
+        assertEquals("Sullivan", repository.findById(1).getFirstName());
+    }
 }

@@ -61,6 +61,21 @@ public class Controller {
                 case ADD_A_GUEST:
                     addGuest();
                     break;
+                case EDIT_A_GUEST:
+                    editGuest();
+                    break;
+                case DELETE_A_GUEST:
+                    deleteGuest();
+                    break;
+                case ADD_A_HOST:
+                    addHost();
+                    break;
+                case EDIT_A_HOST:
+                    editHost();
+                    break;
+                case DELETE_A_HOST:
+                    deleteHost();
+                    break;
             }
         } while (option != MainMenuOption.EXIT);
     }
@@ -160,6 +175,26 @@ public class Controller {
             String successMessage = String.format("Guest %s created.", result.getPayload().getId());
             view.displayStatus(true, successMessage);
         }
+    }
+
+    private void editGuest() {
+
+    }
+
+    private void deleteGuest() {
+
+    }
+
+    private void addHost() {
+
+    }
+
+    private void editHost() {
+
+    }
+
+    private void deleteHost() {
+
     }
 
     // Support Methods

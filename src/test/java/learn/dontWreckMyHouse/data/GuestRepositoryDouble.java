@@ -68,6 +68,20 @@ public class GuestRepositoryDouble implements GuestRepository{
         return guest;
     }
 
+    @Override
+    public Guest update(Guest guest) throws DataException {
+        List<Guest> allGuests = findAll();
+        for (int i = 0; i < allGuests.size(); i++) {
+            if (allGuests.get(i).getId() == guest.getId()) {
+                allGuests.set(i, guest);
+                writeAll(allGuests);
+                return guest;
+            }
+        }
+        // If not found
+        return null;
+    }
+
     private String serialize(Guest guest) {
         return String.format("%s,%s,%s,%s,%s,%s",
                 guest.getId(),

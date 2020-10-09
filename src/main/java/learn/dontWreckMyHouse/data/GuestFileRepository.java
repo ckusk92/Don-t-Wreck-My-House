@@ -1,6 +1,8 @@
 package learn.dontWreckMyHouse.data;
 
 import learn.dontWreckMyHouse.models.Guest;
+import learn.dontWreckMyHouse.models.Host;
+import learn.dontWreckMyHouse.models.Reservation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
@@ -67,6 +69,20 @@ public class GuestFileRepository implements GuestRepository{
         writeAll(all);
 
         return guest;
+    }
+
+    @Override
+    public Guest update(Guest guest) throws DataException {
+        List<Guest> allGuests = findAll();
+        for (int i = 0; i < allGuests.size(); i++) {
+            if (allGuests.get(i).getId() == guest.getId()) {
+                allGuests.set(i, guest);
+                writeAll(allGuests);
+                return guest;
+            }
+        }
+        // If not found
+        return null;
     }
 
     private String serialize(Guest guest) {

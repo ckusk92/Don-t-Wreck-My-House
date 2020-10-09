@@ -11,13 +11,13 @@
     - [x] DataException class - 1 minute
     - [ ] GuestFileRepo - 4 Hours
         - [x] Read Guest - 1 Hour
-        - [ ] Stretch
-            - [ ] Create Guest - 1 Hour
-            - [ ] Update Guest - 1 Hour
+        - Stretch
+            - [x] Create Guest - 1 Hour
+            - [x] Update Guest - 1 Hour
             - [ ] Delete Guest - 1 Hour 
     - [ ] HostFileRepo - 4 Hours
         - [x] Read Hosts - 1 Hour
-        - [ ] Stretch
+        - Stretch
             - [ ] Create Host - 1 Hour
             - [ ] Update Host - 1 Hour
             - [ ] Delete Host - 1 Hour
@@ -31,22 +31,22 @@
     - [ ] Setting up FileDouble repositories for testing - 1 Hour
     - [x] Response + Result - 30 minutes    
     - [ ] GuestService - 4 Hours   
-        - [ ] Read Guest - 1 Hour
-        - [ ] Stretch
-            - [ ] Create Guest - 1 Hour
+        - [x] Read Guest - 1 Hour
+        - Stretch
+            - [x] Create Guest - 1 Hour
             - [ ] Update Guest - 1 Hour
             - [ ] Delete Guest - 1 Hour     
     - [ ] HostService - 4 Hours   
-        - [ ] Read Hosts - 1 Hour
-        - [ ] Stretch
+        - [x] Read Hosts - 1 Hour
+        - Stretch
             - [ ] Create Host - 1 Hour
             - [ ] Update Host - 1 Hour
             - [ ] Delete Host - 1 Hour
-    - [ ] ReservationService - 4 Hours
+    - [x] ReservationService - 4 Hours
         - [x] Read Reservation - 1 Hour
         - [x] Create Reservation - 1 Hour
         - [x] Update Reservation - 1 Hour
-        - [ ] Delete Reservation - 1 Hour    
+        - [x] Delete Reservation - 1 Hour    
         
 - [ ] UI - 7 Hours
     - [ ] ConsoleIO - 1 Hour

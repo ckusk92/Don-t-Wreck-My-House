@@ -1,6 +1,7 @@
 package learn.dontWreckMyHouse.domain;
 
 import learn.dontWreckMyHouse.data.HostRepository;
+import learn.dontWreckMyHouse.models.Guest;
 import learn.dontWreckMyHouse.models.Host;
 import org.springframework.stereotype.Service;
 
@@ -21,5 +22,7 @@ public class HostService {
                 .filter(i -> i.getLastName().startsWith(prefix))
                 .collect(Collectors.toList());
     }
+
+    public List<Host> findAll() { return repository.findAll(); }  // Used for testing purposes
 
 }
