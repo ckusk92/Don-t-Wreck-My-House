@@ -66,6 +66,7 @@ public class ReservationService {
 
         // Make sure reservations are only in the future
 
+
         if(!result.isSuccess()) {
             return result;
         }
@@ -76,7 +77,7 @@ public class ReservationService {
         return result;
     }
 
-    public Result<Reservation> update(Reservation reservation, Host host) throws FileNotFoundException, DataException {
+    public Result<Reservation> update(Reservation reservation, Host host, LocalDate originalStart, LocalDate originalEnd) throws FileNotFoundException, DataException {
 
         List<Reservation> hostReservations = reservationsForHost(host);
         Result<Reservation> result = new Result<>();
@@ -113,6 +114,16 @@ public class ReservationService {
         }
 
         // Make sure reservations are only in the future
+        if(originalStart.compareTo(LocalDate.now()) < 0 && originalEnd.compareTo(LocalDate.now()) < 0) {
+            result.addErrorMessage("Cannot edit a reservation in the past");
+        }
+
+        // Allow user to only change the end state of an ongoing reservation
+        if(originalStart.compareTo(LocalDate.now()) < 0 && originalEnd.compareTo(LocalDate.now()) >= 0) {
+            if(originalStart.compareTo(reservation.getStartDate()) != 0) {
+                result.addErrorMessage("Cannot change the start state of an ongoing reservation");
+            }
+        }
 
         if(!result.isSuccess()) {
             return result;
@@ -120,6 +131,26 @@ public class ReservationService {
 
         reservation.setTotal(calculateTotal(reservation, host));
         result.setPayload(repository.update(reservation, host));
+
+        return result;
+    }
+
+    public Result<Reservation> remove(Reservation reservation, Host host) {
+        Result<Reservation> result = new Result<>();
+
+        if(reservation == null) {
+            result.addErrorMessage("Reservation must not be null");
+            return result;
+        }
+
+        if(host == null) {
+            result.addErrorMessage("Host must not be null");
+            return result;
+        }
+
+        if(!result.isSuccess()) {
+            return result;
+        }
 
         return result;
     }

@@ -44,20 +44,13 @@ public class View {
         return reservation;
     }
 
-    public Reservation updateReservation(Reservation reservation) {
+    public Reservation updateReservation(Reservation reservation, LocalDate originalStart, LocalDate originalEnd) {
         String headerString = String.format("Editing Reservation %s", reservation.getId());
         displayHeader(headerString);
-        //Reservation updatedDates = reservation;
-        LocalDate startDate = editStartDate(reservation.getStartDate());
-        // Indicates user hit enter instead of typing a value
-        if(startDate != LocalDate.of(1000,1,1)) {
-            reservation.setStartDate(startDate);
-        }
-        LocalDate endDate = editEndDate(reservation.getEndDate());
-        // Indicates user hit enter instead of typing a value
-        if(endDate != LocalDate.of(1000,1,1)) {
-            reservation.setEndDate(endDate);
-        }
+
+        reservation.setStartDate(editStartDate(reservation.getStartDate(), originalStart));
+        reservation.setEndDate(editEndDate(reservation.getEndDate(), originalEnd));
+
         return reservation;
     }
 
@@ -94,14 +87,14 @@ public class View {
         return io.readLocalDate("End (MM/dd/yyyy): ");
     }
 
-    public LocalDate editStartDate(LocalDate currentStartDate) {
+    public LocalDate editStartDate(LocalDate currentStartDate, LocalDate originalStart) {
         String prompt = String.format("Start (%s/%s/%s): ", currentStartDate.getMonthValue(), currentStartDate.getDayOfMonth(), currentStartDate.getYear());
-        return io.readLocalDate(prompt);
+        return io.editLocalDate(prompt, originalStart);
     }
 
-    public LocalDate editEndDate(LocalDate currentEndDate) {
+    public LocalDate editEndDate(LocalDate currentEndDate, LocalDate originalEnd) {
         String prompt = String.format("End (%s/%s/%s): ", currentEndDate.getMonthValue(), currentEndDate.getDayOfMonth(), currentEndDate.getYear());
-        return io.readLocalDate(prompt);
+        return io.editLocalDate(prompt, originalEnd);
     }
 
     public Host chooseHost(List<Host> hosts) {

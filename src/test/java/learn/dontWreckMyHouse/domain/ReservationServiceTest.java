@@ -149,7 +149,10 @@ public class ReservationServiceTest {
         reservation.setEndDate(LocalDate.of(2020,10,16));
         reservation.setGuest(guest);
 
-        Result<Reservation> result = service.update(reservation, host);
+        LocalDate originalStart = LocalDate.of(2020,10,13);
+        LocalDate originalEnd = LocalDate.of(2020, 10, 17);
+
+        Result<Reservation> result = service.update(reservation, host, originalStart, originalEnd);
         assertNotNull(result);
         assertEquals(14, result.getPayload().getStartDate().getDayOfMonth());
         assertEquals(16, result.getPayload().getEndDate().getDayOfMonth());
@@ -157,7 +160,7 @@ public class ReservationServiceTest {
     }
 
     @Test
-    void shouldNotUpdate() throws FileNotFoundException, DataException {
+    void shouldNotUpdateOverlapExistingReservation() throws FileNotFoundException, DataException {
         Host host = new Host();
         host.setId("2e25f6f7-3ef0-4f38-8a1a-2b5eea81409c");
         host.setStandardRate(BigDecimal.valueOf(20));
@@ -166,12 +169,81 @@ public class ReservationServiceTest {
         guest.setId(3);
 
         Reservation reservation = new Reservation();
-        reservation.setId(20);
-        reservation.setStartDate(LocalDate.of(2020,10,14));
-        reservation.setEndDate(LocalDate.of(2020,10,16));
+        reservation.setId(1);
+        reservation.setStartDate(LocalDate.of(2020,10,29));
+        reservation.setEndDate(LocalDate.of(2020,11,2));
         reservation.setGuest(guest);
 
-        Result<Reservation> result = service.update(reservation, host);
+        LocalDate originalStart = LocalDate.of(2020,10,13);
+        LocalDate originalEnd = LocalDate.of(2020, 10, 17);
+
+        Result<Reservation> result = service.update(reservation, host, originalStart, originalEnd);
+        assertFalse(result.isSuccess());
+    }
+
+    @Test
+    void shouldNotUpdateStartAfterEnd() throws FileNotFoundException, DataException {
+        Host host = new Host();
+        host.setId("2e25f6f7-3ef0-4f38-8a1a-2b5eea81409c");
+        host.setStandardRate(BigDecimal.valueOf(20));
+        host.setWeekendRate(BigDecimal.valueOf(30));
+        Guest guest = new Guest();
+        guest.setId(3);
+
+        Reservation reservation = new Reservation();
+        reservation.setId(1);
+        reservation.setStartDate(LocalDate.of(2020,11,29));
+        reservation.setEndDate(LocalDate.of(2020,11,25));
+        reservation.setGuest(guest);
+
+        LocalDate originalStart = LocalDate.of(2020,10,13);
+        LocalDate originalEnd = LocalDate.of(2020, 10, 17);
+
+        Result<Reservation> result = service.update(reservation, host, originalStart, originalEnd);
+        assertFalse(result.isSuccess());
+    }
+
+    @Test
+    void shouldNotUpdatePastReservation() throws FileNotFoundException, DataException {
+        Host host = new Host();
+        host.setId("2e25f6f7-3ef0-4f38-8a1a-2b5eea81409c");
+        host.setStandardRate(BigDecimal.valueOf(20));
+        host.setWeekendRate(BigDecimal.valueOf(30));
+        Guest guest = new Guest();
+        guest.setId(3);
+
+        Reservation reservation = new Reservation();
+        reservation.setId(6);
+        reservation.setStartDate(LocalDate.of(2020,11,29));
+        reservation.setEndDate(LocalDate.of(2020,11,25));
+        reservation.setGuest(guest);
+
+        LocalDate originalStart = LocalDate.of(2020,9,12);
+        LocalDate originalEnd = LocalDate.of(2020, 9, 19);
+
+        Result<Reservation> result = service.update(reservation, host, originalStart, originalEnd);
+        assertFalse(result.isSuccess());
+    }
+
+    @Test
+    void shouldNotUpdateOngoingReservationStart() throws FileNotFoundException, DataException {
+        Host host = new Host();
+        host.setId("2e25f6f7-3ef0-4f38-8a1a-2b5eea81409c");
+        host.setStandardRate(BigDecimal.valueOf(20));
+        host.setWeekendRate(BigDecimal.valueOf(30));
+        Guest guest = new Guest();
+        guest.setId(3);
+
+        Reservation reservation = new Reservation();
+        reservation.setId(6);
+        reservation.setStartDate(LocalDate.of(2020,10,10));
+        reservation.setEndDate(LocalDate.of(2020,10,13));
+        reservation.setGuest(guest);
+
+        LocalDate originalStart = LocalDate.of(2020,10,7);
+        LocalDate originalEnd = LocalDate.of(2020, 10, 13);
+
+        Result<Reservation> result = service.update(reservation, host, originalStart, originalEnd);
         assertFalse(result.isSuccess());
     }
 }

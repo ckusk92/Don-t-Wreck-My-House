@@ -105,8 +105,12 @@ public class Controller {
         List<Reservation> matchingReservations = reservationService.findForHostAndGuest(host, guest);
         // Have user pick appropriate one
         Reservation updatedReservation = view.chooseReservation(matchingReservations, host);
-        updatedReservation = view.updateReservation(updatedReservation);
-        Result<Reservation> result = reservationService.update(updatedReservation, host);
+
+        LocalDate originalStart = updatedReservation.getStartDate();
+        LocalDate originalEnd = updatedReservation.getEndDate();
+
+        updatedReservation = view.updateReservation(updatedReservation, originalStart, originalEnd);
+        Result<Reservation> result = reservationService.update(updatedReservation, host, originalStart, originalEnd);
         if (!result.isSuccess()) {
             view.displayStatus(false, result.getErrorMessages());
         } else {
@@ -131,7 +135,9 @@ public class Controller {
         // Get all reservations for host
         List<Reservation> matchingReservations = reservationService.findForHostAndGuest(host, guest);
         // Have user pick appropriate one
-        Reservation updatedReservation = view.chooseReservation(matchingReservations, host);
+        Reservation deleteReservation = view.chooseReservation(matchingReservations, host);
+
+        Result<Reservation> result = reservationService.remove(deleteReservation, host);
     }
 
     // Support Methods

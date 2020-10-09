@@ -113,11 +113,11 @@ public class ConsoleIO {
         }
     }
 
-    public LocalDate editLocalDate(String prompt) {
+    public LocalDate editLocalDate(String prompt, LocalDate original) {
         while (true) {
             String input = readString(prompt);
             if(input.trim().length() == 0) {
-                return LocalDate.of(1000,1,1);
+                return original;
             }
             try {
                 return LocalDate.parse(input, formatter);
