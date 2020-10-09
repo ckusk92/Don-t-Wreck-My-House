@@ -67,6 +67,30 @@ public class View {
         return reservation;
     }
 
+    public Guest updateGuest(Guest guest) {
+        String firstName = io.readString("First Name: ");
+        if(firstName.trim().length() > 0) {
+            guest.setFirstName(firstName);
+        }
+        String lastName = io.readString("Last Name: ");
+        if(lastName.trim().length() > 0) {
+            guest.setLastName(lastName);
+        }
+        String email = io.readString("Email: ");
+        if(email.trim().length() > 0) {
+            guest.setEmail(email);
+        }
+        String phone = io.readPhone("Phone (123) 4567890: ");
+        if(phone.trim().length() > 0) {
+            guest.setPhone(phone);
+        }
+        String state = io.readState("State (2 letter abbreviation): ", false);
+        if(state.trim().length() > 0) {
+            guest.setState(state);
+        }
+        return guest;
+    }
+
     public String getHostLastNamePrefix() {
         String string =  io.readRequiredString("Host last name starts with: ");
         // Allows user to type in lower case looking for last name

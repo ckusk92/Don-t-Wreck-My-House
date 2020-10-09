@@ -177,8 +177,19 @@ public class Controller {
         }
     }
 
-    private void editGuest() {
+    private void editGuest() throws DataException {
+        view.displayHeader(MainMenuOption.EDIT_A_GUEST.getMessage());
+        Guest guest = getGuest();
+        if(guest == null) { return; }
 
+        guest = view.updateGuest(guest);
+        Result<Guest> result = guestService.update(guest);
+        if (!result.isSuccess()) {
+            view.displayStatus(false, result.getErrorMessages());
+        } else {
+            String successMessage = String.format("Guest %s updated.", result.getPayload().getId());
+            view.displayStatus(true, successMessage);
+        }
     }
 
     private void deleteGuest() {
