@@ -19,14 +19,6 @@ public class HostFileRepository implements HostRepository {
     private final String filePath;
     private final ReservationFileRepository reservationDirectory;
 
-//    public HostFileRepository(@Value("./data/hosts.csv") String filePath, @Value("./data/reservations") String reservationDirectory) {
-//
-//        this.filePath = filePath;
-//        this.reservationDirectory = reservationDirectory;
-//
-//    }
-
-
     public HostFileRepository(@Value("./data/hosts.csv") String filePath, ReservationFileRepository reservationDirectory) {
 
         this.filePath = filePath;

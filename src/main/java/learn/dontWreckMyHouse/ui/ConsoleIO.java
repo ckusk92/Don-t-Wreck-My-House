@@ -149,11 +149,45 @@ public class ConsoleIO {
         }
     }
 
-    public String readState(String prompt) {
+    public String readPhone(String prompt) {
+        while(true) {
+            String result = readString(prompt);
+            if(result.isBlank()){
+                return "";
+            } else {
+                // Allow leading or trailing white space
+                result = result.trim();
+                if(result.charAt(0) != '(' ||
+                        (!Character.isDigit(result.charAt(1))) ||
+                        (!Character.isDigit(result.charAt(2))) ||
+                        (!Character.isDigit(result.charAt(3))) ||
+                        (result.charAt(4) != ')') ||
+                        (result.charAt(5) != ' ') ||
+                        (!Character.isDigit(result.charAt(6))) ||
+                        (!Character.isDigit(result.charAt(7))) ||
+                        (!Character.isDigit(result.charAt(8))) ||
+                        (!Character.isDigit(result.charAt(9))) ||
+                        (!Character.isDigit(result.charAt(10))) ||
+                        (!Character.isDigit(result.charAt(11))) ||
+                        (!Character.isDigit(result.charAt(12)))) {
+                    println("Please enter number in format like (123) 4567890");
+                } else {
+                    return result;
+                }
+            }
+        }
+    }
+
+    public String readState(String prompt, boolean stateNeeded) {
         while (true) {
             String result = readString(prompt);
             if (result.isBlank()) {
-                println(REQUIRED);
+                if(stateNeeded) {
+                    println(REQUIRED);
+                // Allow state to be empty if not needed (for guest)
+                } else {
+                    return "";
+                }
             } else if(result.length() != 2) {
                 println("Please enter a 2 letter state abbreviation");
             } else  if (!result.equalsIgnoreCase("AL") &&      //1

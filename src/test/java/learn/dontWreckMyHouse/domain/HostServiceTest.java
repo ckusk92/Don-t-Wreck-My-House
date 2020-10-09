@@ -20,7 +20,8 @@ public class HostServiceTest {
     static final String TEST_DIRECTORY_PATH = "./data/reservations-test";
     static final String GUEST_TEST_PATH = "./data/guests-test.csv";
 
-    HostService service = new HostService(new HostRepositoryDouble(TEST_PATH, new ReservationRepositoryDouble(TEST_DIRECTORY_PATH, new GuestRepositoryDouble(GUEST_TEST_PATH))));
+    //HostService service = new HostService(new HostRepositoryDouble(TEST_PATH, new ReservationRepositoryDouble(TEST_DIRECTORY_PATH, new GuestRepositoryDouble(GUEST_TEST_PATH))));
+    HostService service = new HostService(new HostRepositoryDouble(TEST_PATH));
 
     @BeforeEach
     void setup() throws IOException {

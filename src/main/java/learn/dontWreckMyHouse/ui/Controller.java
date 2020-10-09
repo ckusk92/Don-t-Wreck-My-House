@@ -58,6 +58,9 @@ public class Controller {
                 case CANCEL_A_RESERVATION:
                     cancelReservation();
                     break;
+                case ADD_A_GUEST:
+                    addGuest();
+                    break;
             }
         } while (option != MainMenuOption.EXIT);
     }
@@ -144,6 +147,17 @@ public class Controller {
         if (!result.isSuccess()) {
             view.displayStatus(false, result.getErrorMessages());
         } else {
+            view.displayStatus(true, successMessage);
+        }
+    }
+
+    private void addGuest() throws DataException {
+        Guest guest = view.makeGuest();
+        Result<Guest> result = guestService.add(guest);
+        if (!result.isSuccess()) {
+            view.displayStatus(false, result.getErrorMessages());
+        } else {
+            String successMessage = String.format("Guest %s created.", result.getPayload().getId());
             view.displayStatus(true, successMessage);
         }
     }

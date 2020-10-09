@@ -44,6 +44,19 @@ public class View {
         return reservation;
     }
 
+    public Guest makeGuest() {
+        displayHeader(MainMenuOption.ADD_A_GUEST.getMessage());
+        Guest guest = new Guest();
+        guest.setFirstName(io.readRequiredString("First Name: "));
+        guest.setLastName(io.readRequiredString("Last Name: "));
+        guest.setEmail(io.readRequiredString("Email: "));
+        // Need to create a readPhoneNumber io method
+        guest.setPhone(io.readPhone("Phone (123) 4567890 : "));
+        guest.setState(io.readState("State (2 letter abbreviation): ", false));
+
+        return guest;
+    }
+
     public Reservation updateReservation(Reservation reservation, LocalDate originalStart, LocalDate originalEnd) {
         String headerString = String.format("Editing Reservation %s", reservation.getId());
         displayHeader(headerString);
