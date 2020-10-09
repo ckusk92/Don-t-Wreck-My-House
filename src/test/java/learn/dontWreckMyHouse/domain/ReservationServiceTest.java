@@ -246,4 +246,59 @@ public class ReservationServiceTest {
         Result<Reservation> result = service.update(reservation, host, originalStart, originalEnd);
         assertFalse(result.isSuccess());
     }
+
+    @Test
+    void shouldDelete() throws FileNotFoundException, DataException {
+        Host host = new Host();
+        host.setId("2e25f6f7-3ef0-4f38-8a1a-2b5eea81409c");
+
+        Reservation reservation = new Reservation();
+        reservation.setId(5);
+        reservation.setStartDate(LocalDate.of(2021,6,9));
+        reservation.setEndDate(LocalDate.of(2021,6,12));
+
+        int sizeBefore = service.reservationsForHost(host).size();
+        Result<Reservation> result = service.remove(reservation, host);
+        int sizeAfter = service.reservationsForHost(host).size();
+
+        assertTrue(result.isSuccess());
+        assertEquals(1, sizeBefore - sizeAfter);
+    }
+
+    @Test
+    void shouldNotDeletePastReservation() throws FileNotFoundException, DataException {
+        Host host = new Host();
+        host.setId("2e25f6f7-3ef0-4f38-8a1a-2b5eea81409c");
+
+        Reservation reservation = new Reservation();
+        reservation.setId(8);
+        reservation.setStartDate(LocalDate.of(2020,5,22));
+        reservation.setEndDate(LocalDate.of(2020,5,28));
+
+        int sizeBefore = service.reservationsForHost(host).size();
+        Result<Reservation> result = service.remove(reservation, host);
+        int sizeAfter = service.reservationsForHost(host).size();
+
+        assertFalse(result.isSuccess());
+        assertEquals(sizeBefore, sizeAfter);
+    }
+
+    @Test
+    void shouldNotDeleteOngoingReservation() throws FileNotFoundException, DataException {
+        Host host = new Host();
+        host.setId("2e25f6f7-3ef0-4f38-8a1a-2b5eea81409c");
+
+        Reservation reservation = new Reservation();
+        reservation.setId(9);
+        reservation.setStartDate(LocalDate.of(2020,10,7));
+        reservation.setEndDate(LocalDate.of(2020,10,17));
+
+        int sizeBefore = service.reservationsForHost(host).size();
+        Result<Reservation> result = service.remove(reservation, host);
+        int sizeAfter = service.reservationsForHost(host).size();
+
+        assertFalse(result.isSuccess());
+        assertEquals(sizeBefore, sizeAfter);
+    }
+
 }

@@ -16,7 +16,7 @@ public interface ReservationRepository {
 
     Reservation update(Reservation reservation, Host host) throws DataException, FileNotFoundException;
 
-    boolean deleteById(int reservationId, Host host) throws FileNotFoundException, DataException;
+    Reservation deleteReservation(Reservation reservation, Host host) throws FileNotFoundException, DataException;
 
     List<Reservation> findReservationsForHost(Host host) throws FileNotFoundException;
 }

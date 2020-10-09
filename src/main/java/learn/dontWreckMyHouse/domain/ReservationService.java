@@ -135,7 +135,7 @@ public class ReservationService {
         return result;
     }
 
-    public Result<Reservation> remove(Reservation reservation, Host host) {
+    public Result<Reservation> remove(Reservation reservation, Host host) throws FileNotFoundException, DataException {
         Result<Reservation> result = new Result<>();
 
         if(reservation == null) {
@@ -148,9 +148,21 @@ public class ReservationService {
             return result;
         }
 
+        // Do not delete reservation in past
+        if(reservation.getStartDate().compareTo(LocalDate.now()) <= 0 || reservation.getEndDate().compareTo(LocalDate.now()) < 0){
+            result.addErrorMessage("Cannot delete a past reservation");
+        }
+
+        // Do not delete reservation that is ongoing
+        if(reservation.getStartDate().compareTo(LocalDate.now()) <= 0 && reservation.getEndDate().compareTo(LocalDate.now()) >= 0){
+            result.addErrorMessage("Cannot delete an ongoing reservation");
+        }
+
         if(!result.isSuccess()) {
             return result;
         }
+
+        result.setPayload(repository.deleteReservation(reservation, host));
 
         return result;
     }

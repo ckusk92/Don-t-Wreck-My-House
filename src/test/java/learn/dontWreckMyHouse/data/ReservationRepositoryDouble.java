@@ -56,16 +56,16 @@ public class ReservationRepositoryDouble implements ReservationRepository{
     }
 
     @Override
-    public boolean deleteById(int reservationId, Host host) throws FileNotFoundException, DataException {
+    public Reservation deleteReservation(Reservation reservation, Host host) throws FileNotFoundException, DataException {
         List<Reservation> allByHost = findReservationsForHost(host);
         for(int i = 0; i < allByHost.size(); i++) {
-            if(allByHost.get(i).getId() == reservationId) {
+            if(allByHost.get(i).getId() == reservation.getId()) {
                 allByHost.remove(i);
                 writeAll(allByHost, host);
-                return true;
+                return reservation;
             }
         }
-        return false;
+        return null;
     }
 
     @Override

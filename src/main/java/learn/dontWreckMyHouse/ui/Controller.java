@@ -125,7 +125,7 @@ public class Controller {
         }
     }
 
-    private void cancelReservation() throws FileNotFoundException {
+    private void cancelReservation() throws FileNotFoundException, DataException {
         view.displayHeader(MainMenuOption.CANCEL_A_RESERVATION.getMessage());
         Guest guest = getGuest();
         if(guest == null) { return; }
@@ -136,8 +136,16 @@ public class Controller {
         List<Reservation> matchingReservations = reservationService.findForHostAndGuest(host, guest);
         // Have user pick appropriate one
         Reservation deleteReservation = view.chooseReservation(matchingReservations, host);
+        int deleteId = deleteReservation.getId();
 
         Result<Reservation> result = reservationService.remove(deleteReservation, host);
+        String successMessage = String.format("Reservation %s cancelled.", deleteId);
+
+        if (!result.isSuccess()) {
+            view.displayStatus(false, result.getErrorMessages());
+        } else {
+            view.displayStatus(true, successMessage);
+        }
     }
 
     // Support Methods

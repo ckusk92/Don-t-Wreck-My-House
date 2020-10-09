@@ -115,7 +115,14 @@ public class ReservationRepositoryTest {
         Host host = new Host();
         host.setId("2e25f6f7-3ef0-4f38-8a1a-2b5eea81409c");
 
-        assertTrue(repository.deleteById(5, host));
+        Reservation reservation = new Reservation();
+        reservation.setId(5);
+
+        int sizeBefore = repository.findReservationsForHost(host).size();
+        Reservation result = repository.deleteReservation(reservation, host);
+        int sizeAfter = repository.findReservationsForHost(host).size();
+        assertNotNull(result);
+        assertEquals(1, sizeBefore - sizeAfter);
     }
 
     @Test
@@ -123,6 +130,13 @@ public class ReservationRepositoryTest {
         Host host = new Host();
         host.setId("2e25f6f7-3ef0-4f38-8a1a-2b5eea81409c");
 
-        assertFalse(repository.deleteById(50000, host));
+        Reservation reservation = new Reservation();
+        reservation.setId(1000);
+
+        int sizeBefore = repository.findReservationsForHost(host).size();
+        Reservation result = repository.deleteReservation(reservation, host);
+        int sizeAfter = repository.findReservationsForHost(host).size();
+        assertNull(result);
+        assertEquals(0, sizeBefore - sizeAfter);
     }
 }
