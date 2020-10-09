@@ -88,4 +88,48 @@ public class GuestServiceTest {
         assertEquals(sizeAfter, sizeBefore);
     }
 
+    @Test
+    void shouldUpdate() throws DataException {
+        Guest guest = new Guest();
+        guest.setFirstName("Charles");
+        guest.setLastName("Kusk");
+        guest.setEmail("fake@fake.com");
+        guest.setId(1);
+
+        Result<Guest> result = service.update(guest);
+
+        assertNotNull(result);
+        assertTrue(result.isSuccess());
+        assertEquals("Charles", service.findById(1).getFirstName());
+    }
+
+    @Test
+    void shouldNotUpdateNotFoundId() throws DataException {
+        Guest guest = new Guest();
+        guest.setFirstName("Charles");
+        guest.setLastName("Kusk");
+        guest.setEmail("fake@fake.com");
+        guest.setId(1000);
+
+        Result<Guest> result = service.update(guest);
+
+        assertNotNull(result);
+        assertFalse(result.isSuccess());
+        assertEquals("Sullivan", service.findById(1).getFirstName());
+    }
+
+    @Test
+    void shouldNotUpdateDuplicateEmail() throws DataException {
+        Guest guest = new Guest();
+        guest.setFirstName("Charles");
+        guest.setLastName("Kusk");
+        guest.setEmail("tcarncross2@japanpost.jp");
+        guest.setId(1);
+
+        Result<Guest> result = service.update(guest);
+
+        assertNotNull(result);
+        assertFalse(result.isSuccess());
+        assertEquals("Sullivan", service.findById(1).getFirstName());
+    }
 }
