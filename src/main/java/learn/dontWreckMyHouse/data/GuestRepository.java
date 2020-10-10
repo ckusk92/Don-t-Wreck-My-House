@@ -15,4 +15,5 @@ public interface GuestRepository {
 
     Guest update(Guest guest) throws DataException;
 
+    Guest delete(Guest guest);
 }

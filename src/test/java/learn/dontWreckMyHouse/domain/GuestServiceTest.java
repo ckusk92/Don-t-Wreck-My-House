@@ -17,8 +17,21 @@ public class GuestServiceTest {
 
     static final String SEED_PATH = "./data/guests-seed.csv";
     static final String TEST_PATH = "./data/guests-test.csv";
+    static final String RESERVATION_TEST_DIR = "./data/reservations-test";
 
-    GuestService service = new GuestService(new GuestFileRepository(TEST_PATH));
+    //GuestService service = new GuestService(new GuestFileRepository(TEST_PATH));
+    GuestRepositoryDouble guestRepository = new GuestRepositoryDouble();
+    ReservationRepositoryDouble reservationRepository = new ReservationRepositoryDouble();
+    //GuestService service = new GuestService(new GuestFileRepository());
+    GuestService service = new GuestService();
+
+    public GuestServiceTest() {
+        guestRepository.setFilePath(TEST_PATH);
+        guestRepository.setReservationRepository(reservationRepository);
+        reservationRepository.setReservationTestDirectory(RESERVATION_TEST_DIR);
+        reservationRepository.setGuestRepository(guestRepository);
+        service.setRepository(guestRepository);
+    }
 
     @BeforeEach
     void setup() throws IOException {

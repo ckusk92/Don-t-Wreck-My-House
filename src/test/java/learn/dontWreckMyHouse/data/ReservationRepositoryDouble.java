@@ -2,6 +2,7 @@ package learn.dontWreckMyHouse.data;
 
 import learn.dontWreckMyHouse.models.Host;
 import learn.dontWreckMyHouse.models.Reservation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.*;
@@ -14,12 +15,73 @@ import java.util.List;
 public class ReservationRepositoryDouble implements ReservationRepository{
 
     private static final String HEADER = "id,start_date,end_date,guest_id,total";
-    private final String reservationTestDirectory;
-    private final GuestRepositoryDouble guestRepositoryDouble;
+    private String reservationTestDirectory;
+    private GuestRepository guestRepository;
 
-    public ReservationRepositoryDouble(@Value("./data/reservations-test") String reservationTestDirectory, GuestRepositoryDouble guestRepositoryDouble) {
-        this.reservationTestDirectory = reservationTestDirectory;
-        this.guestRepositoryDouble = guestRepositoryDouble;
+//    public ReservationRepositoryDouble(@Value("./data/reservations-test") String reservationTestDirectory, GuestRepositoryDouble guestRepositoryDouble) {
+//        this.reservationTestDirectory = reservationTestDirectory;
+//        this.guestRepositoryDouble = guestRepositoryDouble;
+//    }
+
+    @Autowired
+    public void setReservationTestDirectory(@Value("./data/reservations-test") String reservationDirectory) {
+        this.reservationTestDirectory = reservationDirectory;
+    }
+
+    @Autowired
+    public void setGuestRepository(GuestRepository guestRepository) {
+        this.guestRepository = guestRepository;
+    }
+
+    @Override
+    public List<Reservation> findReservationsForHost(Host host) throws FileNotFoundException {
+
+        if(host == null) {
+            return null;
+        }
+
+        ArrayList<Reservation> reservations = new ArrayList<>();
+
+        String hostFileName = String.format("%s.csv", host.getId());
+        boolean hostFileFound = false;
+        File dir = new File(reservationTestDirectory);
+        File[] directoryListing = dir.listFiles();
+        if(directoryListing != null) {
+            // Loop through every file in reservations directory
+            for(File child : directoryListing) {
+                try(BufferedReader reader = new BufferedReader(new FileReader(child))) {
+                    String fileName = child.getName();
+                    // Grab filename minus the .csv
+                    String[] fileNameArray = fileName.split("\\.", -1);
+                    // When we hit a match
+                    if(fileName.equalsIgnoreCase(hostFileName)) {
+                        // Read header line first
+                        reader.readLine();
+                        for(String line = reader.readLine(); line != null; line = reader.readLine()) {
+                            String[] fields = line.split(",", -1);
+                            if(fields.length == 5) {
+                                reservations.add(deserializeReservation(fields, fileNameArray[0]));
+                            } else {
+                                continue;
+                            }
+                        }
+                        // Should only be one file per host
+                        hostFileFound = true;
+                        break;
+                    }
+                } catch (IOException ex) {
+                    // don't throw on read
+                }
+            }
+        } else {
+            return null;
+        }
+
+        if(!hostFileFound) {
+            return null;
+        } else {
+            return reservations;
+        }
     }
 
     @Override
@@ -68,33 +130,6 @@ public class ReservationRepositoryDouble implements ReservationRepository{
         return null;
     }
 
-    @Override
-    public List<Reservation> findReservationsForHost(Host host) throws FileNotFoundException {
-
-        if (host == null) {
-            return null;
-        }
-        ArrayList<Reservation> reservations = new ArrayList<>();
-
-        String hostFileName = String.format("%s.csv", host.getId());
-
-         try (BufferedReader reader = new BufferedReader(new FileReader(String.format("%s/%s", reservationTestDirectory, hostFileName)))) {
-             reader.readLine();
-             for (String line = reader.readLine(); line != null; line = reader.readLine()) {
-                 String[] fields = line.split(",", -1);
-                 if (fields.length == 5) {
-                     reservations.add(deserializeReservation(fields));
-                 } else {
-                     return null;
-                 }
-             }
-         } catch (IOException ex) {
-             // don't throw on read
-         }
-         return reservations;
-    }
-
-
     private String serialize(Reservation reservation) {
         return String.format("%s,%s,%s,%s,%s",
                 reservation.getId(),
@@ -104,7 +139,7 @@ public class ReservationRepositoryDouble implements ReservationRepository{
                 reservation.getTotal().setScale(2, RoundingMode.HALF_UP));
     }
 
-    private Reservation deserializeReservation(String[] fields) {
+    private Reservation deserializeReservation(String[] fields, String hostId) {
         Reservation result = new Reservation();
         result.setId(Integer.parseInt(fields[0]));
 
@@ -120,15 +155,17 @@ public class ReservationRepositoryDouble implements ReservationRepository{
         int endDateDay = Integer.parseInt(endDateArray[2]);
         result.setEndDate(LocalDate.of(endDateYear,endDateMonth,endDateDay));
 
-        result.setGuest(guestRepositoryDouble.findById(Integer.parseInt(fields[3])));
-        result.setTotal(BigDecimal.valueOf(Double.parseDouble(fields[4])));
+        result.setGuest(guestRepository.findById(Integer.parseInt(fields[3])));  // Only instance where guestRepository is needed
+        result.setTotal(BigDecimal.valueOf(Double.parseDouble(fields[4])).setScale(2, RoundingMode.HALF_UP));
+        result.setHostId(hostId);
 
         return result;
     }
 
     protected void writeAll(List<Reservation> reservations, Host host) throws DataException {
 
-        String filePath = String.format("./data/reservations-test/%s.csv", host.getId());
+        // Need it to write to reservations-test for testing function
+        String filePath = String.format("%s/%s.csv", reservationTestDirectory, host.getId());
 
         try (PrintWriter writer = new PrintWriter(filePath)) {
 
@@ -147,5 +184,32 @@ public class ReservationRepositoryDouble implements ReservationRepository{
         }
     }
 
-
+    // Used primarily for the deletion of host and guest to delete belonging reservations
+    public List<Reservation> findAll() {
+        ArrayList<Reservation> result = new ArrayList<>();
+        File dir = new File(reservationTestDirectory);
+        File[] directoryListing = dir.listFiles();
+        if(directoryListing != null) {
+            for(File child : directoryListing) {
+                // Need to confirm that directory is correct
+                try (BufferedReader reader = new BufferedReader(new FileReader(child))) {
+                    String fileName = child.getName();
+                    // Grab filename minus the .csv
+                    String[] fileNameArray = fileName.split("\\.", -1);
+                    // Get date from file name for delimiter method
+                    reader.readLine(); // read header
+                    for (String line = reader.readLine(); line != null; line = reader.readLine()) {
+                        String[] fields = line.split(",", -1);
+                        if (fields.length == 5) {
+                            // Second parameter needs to date as Forage's are stored in separate files
+                            result.add(deserializeReservation(fields, fileNameArray[0]));
+                        }
+                    }
+                } catch (IOException ex) {
+                    // don't throw on read
+                }
+            }
+        }
+        return result;
+    }
 }

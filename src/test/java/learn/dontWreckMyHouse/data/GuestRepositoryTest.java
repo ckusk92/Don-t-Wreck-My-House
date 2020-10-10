@@ -1,9 +1,12 @@
 package learn.dontWreckMyHouse.data;
 
 import learn.dontWreckMyHouse.models.Guest;
+import learn.dontWreckMyHouse.models.Host;
+import learn.dontWreckMyHouse.models.Reservation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -17,9 +20,18 @@ public class GuestRepositoryTest {
 
     static final String SEED_PATH = "./data/guests-seed.csv";
     static final String TEST_PATH = "./data/guests-test.csv";
+    static final String TEST_REPOSITORY_PATH = "./data/reservation-test";
     static final int NEXT_ID = 11;
 
-    GuestFileRepository repository = new GuestFileRepository(TEST_PATH);
+    GuestRepositoryDouble repository = new GuestRepositoryDouble();
+    ReservationFileRepository reservationFileRepository = new ReservationFileRepository();
+
+    public GuestRepositoryTest(){
+        repository.setFilePath(TEST_PATH);
+        repository.setReservationRepository(reservationFileRepository);
+        reservationFileRepository.setReservationDirectory(TEST_REPOSITORY_PATH);
+        reservationFileRepository.setGuestRepository(repository);
+    }
 
     @BeforeEach
     void setup() throws IOException {

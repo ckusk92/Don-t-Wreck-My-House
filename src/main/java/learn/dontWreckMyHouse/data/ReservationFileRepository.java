@@ -3,6 +3,7 @@ package learn.dontWreckMyHouse.data;
 import learn.dontWreckMyHouse.models.Guest;
 import learn.dontWreckMyHouse.models.Host;
 import learn.dontWreckMyHouse.models.Reservation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
@@ -17,11 +18,21 @@ import java.util.List;
 public class ReservationFileRepository implements ReservationRepository {
 
     private static final String HEADER = "id,start_date,end_date,guest_id,total";
-    private final String reservationDirectory;
-    private final GuestRepository guestRepository;
+    private String reservationDirectory;
+    private GuestRepository guestRepository;
 
-    public ReservationFileRepository(@Value("./data/reservations") String reservationDirectory, GuestRepository guestRepository) {
+//    public ReservationFileRepository(@Value("./data/reservations") String reservationDirectory, GuestRepository guestRepository) {
+//        this.reservationDirectory = reservationDirectory;
+//        this.guestRepository = guestRepository;
+//    }
+
+    @Autowired
+    public void setReservationDirectory(@Value("./data/reservations") String reservationDirectory) {
         this.reservationDirectory = reservationDirectory;
+    }
+
+    @Autowired
+    public void setGuestRepository(GuestRepository guestRepository) {
         this.guestRepository = guestRepository;
     }
 
@@ -43,7 +54,8 @@ public class ReservationFileRepository implements ReservationRepository {
             for(File child : directoryListing) {
                 try(BufferedReader reader = new BufferedReader(new FileReader(child))) {
                     String fileName = child.getName();
-
+                    // Grab filename minus the .csv
+                    String[] fileNameArray = fileName.split("\\.", -1);
                     // When we hit a match
                     if(fileName.equalsIgnoreCase(hostFileName)) {
                         // Read header line first
@@ -51,7 +63,7 @@ public class ReservationFileRepository implements ReservationRepository {
                         for(String line = reader.readLine(); line != null; line = reader.readLine()) {
                             String[] fields = line.split(",", -1);
                             if(fields.length == 5) {
-                                reservations.add(deserializeReservation(fields));
+                                reservations.add(deserializeReservation(fields, fileNameArray[0]));
                             } else {
                                 continue;
                             }
@@ -130,7 +142,7 @@ public class ReservationFileRepository implements ReservationRepository {
                 reservation.getTotal().setScale(2, RoundingMode.HALF_UP));
     }
 
-    private Reservation deserializeReservation(String[] fields) {
+    private Reservation deserializeReservation(String[] fields, String hostId) {
         Reservation result = new Reservation();
         result.setId(Integer.parseInt(fields[0]));
 
@@ -146,8 +158,9 @@ public class ReservationFileRepository implements ReservationRepository {
         int endDateDay = Integer.parseInt(endDateArray[2]);
         result.setEndDate(LocalDate.of(endDateYear,endDateMonth,endDateDay));
 
-        result.setGuest(guestRepository.findById(Integer.parseInt(fields[3])));
+        result.setGuest(guestRepository.findById(Integer.parseInt(fields[3])));  // Only instance where guestRepository is needed
         result.setTotal(BigDecimal.valueOf(Double.parseDouble(fields[4])).setScale(2, RoundingMode.HALF_UP));
+        result.setHostId(hostId);
 
         return result;
     }
@@ -172,5 +185,34 @@ public class ReservationFileRepository implements ReservationRepository {
         } catch (FileNotFoundException ex) {
             throw new DataException(ex);
         }
+    }
+
+    // Used primarily for the deletion of host and guest to delete belonging reservations
+    public List<Reservation> findAll() {
+        ArrayList<Reservation> result = new ArrayList<>();
+        File dir = new File(reservationDirectory);
+        File[] directoryListing = dir.listFiles();
+        if(directoryListing != null) {
+            for(File child : directoryListing) {
+                // Need to confirm that directory is correct
+                try (BufferedReader reader = new BufferedReader(new FileReader(child))) {
+                    String fileName = child.getName();
+                    // Grab filename minus the .csv
+                    String[] fileNameArray = fileName.split("\\.", -1);
+                    // Get date from file name for delimiter method
+                    reader.readLine(); // read header
+                    for (String line = reader.readLine(); line != null; line = reader.readLine()) {
+                        String[] fields = line.split(",", -1);
+                        if (fields.length == 5) {
+                            // Second parameter needs to date as Forage's are stored in separate files
+                            result.add(deserializeReservation(fields, fileNameArray[0]));
+                        }
+                    }
+                } catch (IOException ex) {
+                    // don't throw on read
+                }
+            }
+        }
+        return result;
     }
 }

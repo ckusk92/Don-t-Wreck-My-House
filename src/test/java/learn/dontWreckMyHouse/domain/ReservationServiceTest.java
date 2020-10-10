@@ -1,9 +1,6 @@
 package learn.dontWreckMyHouse.domain;
 
-import learn.dontWreckMyHouse.data.DataException;
-import learn.dontWreckMyHouse.data.GuestRepositoryDouble;
-import learn.dontWreckMyHouse.data.ReservationRepository;
-import learn.dontWreckMyHouse.data.ReservationRepositoryDouble;
+import learn.dontWreckMyHouse.data.*;
 import learn.dontWreckMyHouse.models.Guest;
 import learn.dontWreckMyHouse.models.Host;
 import learn.dontWreckMyHouse.models.Reservation;
@@ -32,7 +29,19 @@ public class ReservationServiceTest {
 
     //ReservationService service = new ReservationService(new ReservationRepositoryDouble(TEST_FILE_PATH, new GuestRepositoryDouble(GUEST_TEST_PATH)));
     // Running into problem of directory being null
-    ReservationService service = new ReservationService(new ReservationRepositoryDouble(TEST_DIR_PATH, new GuestRepositoryDouble(GUEST_TEST_PATH)));
+    //ReservationService service = new ReservationService(new ReservationRepositoryDouble(TEST_DIR_PATH, new GuestRepositoryDouble(GUEST_TEST_PATH)));
+    //ReservationService service = new ReservationService(new ReservationFileRepository());
+    ReservationRepositoryDouble reservationRepository = new ReservationRepositoryDouble();
+    GuestRepositoryDouble guestRepository = new GuestRepositoryDouble();
+    ReservationService service = new ReservationService();
+
+    public ReservationServiceTest() {
+        reservationRepository.setReservationTestDirectory(TEST_DIR_PATH);
+        guestRepository.setFilePath(GUEST_TEST_PATH);
+        reservationRepository.setGuestRepository(guestRepository);
+        guestRepository.setReservationRepository(reservationRepository);
+        service.setRepository(reservationRepository);
+    }
 
     @BeforeEach
     void setup() throws IOException {

@@ -3,6 +3,7 @@ package learn.dontWreckMyHouse.data;
 import learn.dontWreckMyHouse.models.Guest;
 import learn.dontWreckMyHouse.models.Host;
 import learn.dontWreckMyHouse.models.Reservation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
@@ -16,15 +17,24 @@ import java.util.List;
 public class HostFileRepository implements HostRepository {
 
     private static final String HEADER = "id,last_name,email,phone,address,city,state,postal_code,standard_rate,weekend_rate";
-    private final String filePath;
-    private final ReservationFileRepository reservationDirectory;
+    private String filePath;
+    //private ReservationFileRepository reservationDirectory;
 
-    public HostFileRepository(@Value("./data/hosts.csv") String filePath, ReservationFileRepository reservationDirectory) {
+//    public HostFileRepository(@Value("./data/hosts.csv") String filePath, ReservationFileRepository reservationDirectory) {
+//        this.filePath = filePath;
+//        this.reservationDirectory = reservationDirectory;
+//
+//    }
 
+    @Autowired
+    public void setFilePath(@Value("./data/hosts.csv") String filePath) {
         this.filePath = filePath;
-        this.reservationDirectory = reservationDirectory;
-
     }
+
+//    @Autowired
+//    public void setReservationDirectory(ReservationFileRepository reservationDirectory) {
+//        this.reservationDirectory = reservationDirectory;
+//    }
 
     @Override
     public List<Host> findAll() {

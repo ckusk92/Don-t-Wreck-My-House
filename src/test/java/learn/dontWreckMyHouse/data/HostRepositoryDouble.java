@@ -1,11 +1,10 @@
 package learn.dontWreckMyHouse.data;
 
 import learn.dontWreckMyHouse.models.Host;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,9 +12,14 @@ import java.util.List;
 public class HostRepositoryDouble implements HostRepository {
 
     private static final String HEADER = "id,last_name,email,phone,address,city,state,postal_code,standard_rate,weekend_rate";
-    private final String filePath;
+    private String filePath;
 
-    public HostRepositoryDouble(@Value("./data/hosts-test.csv") String filePath) {
+//    public HostRepositoryDouble(@Value("./data/hosts-test.csv") String filePath) {
+//        this.filePath = filePath;
+//    }
+
+    @Autowired
+    public void setFilePath(@Value("./data/hosts-test.csv") String filePath) {
         this.filePath = filePath;
     }
 
@@ -43,12 +47,40 @@ public class HostRepositoryDouble implements HostRepository {
 
     @Override
     public Host findById(String id) {
-        return null;
+        return findAll().stream()
+                .filter(g -> g.getId().equalsIgnoreCase(id))
+                .findFirst()
+                .orElse(null);
     }
 
     @Override
     public Host add(Host host) throws DataException {
-        return null;
+        if (host == null) {
+            return null;
+        }
+
+        List<Host> all = findAll();
+
+        host.setId(java.util.UUID.randomUUID().toString());
+
+        all.add(host);
+        writeAll(all);
+
+        return host;
+    }
+
+    private String serialize(Host host) {
+        return String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s",
+                host.getId(),
+                host.getLastName(),
+                host.getEmail(),
+                host.getPhone(),
+                host.getAddress(),
+                host.getCity(),
+                host.getState(),
+                host.getPostalCode(),
+                host.getStandardRate(),
+                host.getWeekendRate());
     }
 
     private Host deserializeHost(String[] fields) {
@@ -64,6 +96,24 @@ public class HostRepositoryDouble implements HostRepository {
         result.setStandardRate(BigDecimal.valueOf(Double.parseDouble(fields[8])));
         result.setWeekendRate(BigDecimal.valueOf(Double.parseDouble(fields[9])));
         return result;
+    }
+
+    protected void writeAll(List<Host> hosts) throws DataException {
+        try (PrintWriter writer = new PrintWriter(filePath)) {
+
+            writer.println(HEADER);
+
+            if (hosts == null) {
+                return;
+            }
+
+            for (Host host : hosts) {
+                writer.println(serialize(host));
+            }
+
+        } catch (FileNotFoundException ex) {
+            throw new DataException(ex);
+        }
     }
 
 }

@@ -26,7 +26,16 @@ public class ReservationRepositoryTest {
     static final String TEST_DIR_PATH = "./data/reservations-test";
     static final String GUEST_TEST_PATH = "./data/guests-test.csv";
 
-    ReservationFileRepository repository = new ReservationFileRepository(TEST_DIR_PATH, new GuestFileRepository(GUEST_TEST_PATH));
+    //ReservationFileRepository repository = new ReservationFileRepository(TEST_DIR_PATH, new GuestFileRepository(GUEST_TEST_PATH, repository));
+    ReservationFileRepository repository = new ReservationFileRepository();
+    GuestFileRepository guestFileRepository = new GuestFileRepository();
+
+    public ReservationRepositoryTest() {
+        repository.setReservationDirectory(TEST_DIR_PATH);
+        repository.setGuestRepository(guestFileRepository);
+        guestFileRepository.setFilePath(GUEST_TEST_PATH);
+        guestFileRepository.setReservationRepository(repository);
+    }
 
     @BeforeEach
     void setup() throws IOException {
@@ -42,6 +51,13 @@ public class ReservationRepositoryTest {
         List<Reservation> reservations = repository.findReservationsForHost(host);
         assertNotNull(reservations);
         assertEquals(13, reservations.size());
+    }
+
+    @Test
+    void shouldFindAllFiftyReservations() {
+        List<Reservation> reservations = repository.findAll();
+        assertNotNull(reservations);
+        assertEquals(50, reservations.size());
     }
 
     @Test
@@ -69,7 +85,7 @@ public class ReservationRepositoryTest {
 
         Reservation result = repository.add(reservation, host);
         assertEquals(reservation, result);
-        assertEquals(13, repository.findReservationsForHost(host).size());
+        assertEquals(14, repository.findReservationsForHost(host).size());
     }
 
     @Test

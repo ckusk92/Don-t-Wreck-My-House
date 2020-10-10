@@ -25,7 +25,12 @@ public class HostRepositoryTest {
     static final String TEST_DIRECTORY_PATH = "./data/reservations-test";
     static final String GUEST_TEST_PATH = "./data/guests-test.csv";
 
-    HostFileRepository repository = new HostFileRepository(TEST_PATH, new ReservationFileRepository(TEST_DIRECTORY_PATH, new GuestFileRepository(GUEST_TEST_PATH)));
+    //HostFileRepository repository = new HostFileRepository(TEST_PATH, new ReservationFileRepository(TEST_DIRECTORY_PATH, new GuestFileRepository(GUEST_TEST_PATH)));
+    HostFileRepository repository = new HostFileRepository();
+
+    public HostRepositoryTest() {
+        repository.setFilePath(TEST_PATH);
+    }
 
     @BeforeEach
     void setup() throws IOException {

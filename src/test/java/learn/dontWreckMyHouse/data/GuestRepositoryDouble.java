@@ -1,6 +1,7 @@
 package learn.dontWreckMyHouse.data;
 
 import learn.dontWreckMyHouse.models.Guest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.*;
@@ -10,10 +11,22 @@ import java.util.List;
 public class GuestRepositoryDouble implements GuestRepository{
 
     private static final String HEADER = "guest_id,first_name,last_name,email,phone,state";
-    private final String filePath;
+    private String filePath;
+    private ReservationRepository reservationRepository;
 
-    public GuestRepositoryDouble(@Value("./data/guests-test.csv") String filePath) {
+//    public GuestRepositoryDouble(@Value("./data/guests-test.csv") String filePath, GuestRepository guestRepository) {
+//        this.filePath = filePath;
+//        this.guestRepository = guestRepository;
+//    }
+
+    @Autowired
+    public void setFilePath(@Value("./data/guests-test.csv") String filePath) {
         this.filePath = filePath;
+    }
+
+    @Autowired
+    public void setReservationRepository(ReservationRepository reservationRepository) {
+        this.reservationRepository = reservationRepository;
     }
 
     @Override
@@ -79,6 +92,12 @@ public class GuestRepositoryDouble implements GuestRepository{
             }
         }
         // If not found
+        return null;
+    }
+
+    @Override
+    public Guest delete(Guest guest) {
+
         return null;
     }
 

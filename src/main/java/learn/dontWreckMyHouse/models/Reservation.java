@@ -10,6 +10,8 @@ public class Reservation {
     private LocalDate endDate;
     private Guest guest;
     private BigDecimal total;
+    // Will not be retained in CSV file, just added upon a read all function
+    private String hostId;
 
     public int getId() {
         return id;
@@ -49,5 +51,13 @@ public class Reservation {
 
     public void setTotal(BigDecimal total) {
         this.total = total;
+    }
+
+    public String getHostId() {
+        return hostId;
+    }
+
+    public void setHostId(String hostId) {
+        this.hostId = hostId;
     }
 }

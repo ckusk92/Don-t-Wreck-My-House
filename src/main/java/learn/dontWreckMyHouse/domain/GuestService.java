@@ -1,9 +1,11 @@
 package learn.dontWreckMyHouse.domain;
 
 import learn.dontWreckMyHouse.data.DataException;
+import learn.dontWreckMyHouse.data.GuestFileRepository;
 import learn.dontWreckMyHouse.data.GuestRepository;
 import learn.dontWreckMyHouse.models.Guest;
 import learn.dontWreckMyHouse.models.Host;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,9 +14,14 @@ import java.util.stream.Collectors;
 @Service
 public class GuestService {
 
-    private final GuestRepository repository;
+    private GuestRepository repository;
 
-    public GuestService(GuestRepository repository) {
+//    public GuestService(GuestRepository repository) {
+//        this.repository = repository;
+//    }
+
+    @Autowired
+    public void setRepository(GuestRepository repository) {
         this.repository = repository;
     }
 

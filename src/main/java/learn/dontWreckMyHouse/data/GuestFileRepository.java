@@ -3,6 +3,7 @@ package learn.dontWreckMyHouse.data;
 import learn.dontWreckMyHouse.models.Guest;
 import learn.dontWreckMyHouse.models.Host;
 import learn.dontWreckMyHouse.models.Reservation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
@@ -14,10 +15,27 @@ import java.util.List;
 public class GuestFileRepository implements GuestRepository{
 
     private static final String HEADER = "guest_id,first_name,last_name,email,phone,state";
-    private final String filePath;
+    private String filePath;
+    private ReservationRepository reservationRepository;
 
-    public GuestFileRepository(@Value("./data/guests.csv") String filePath) {
+//    public GuestFileRepository(@Value("./data/guests.csv") String filePath, ReservationRepository reservationRepository) {
+//        this.filePath = filePath;
+//        this.reservationRepository = reservationRepository;
+//    }
+
+//    @Autowired
+//    public void setFilePath(@Value("./data/guests.csv") String filePath) {
+//        this.filePath = filePath;
+//    }
+
+    @Autowired
+    public void setFilePath(@Value("./data/guests.csv")String filePath) {
         this.filePath = filePath;
+    }
+
+    @Autowired
+    public void setReservationRepository(ReservationFileRepository reservationRepository) {
+        this.reservationRepository = reservationRepository;
     }
 
     @Override
@@ -82,6 +100,25 @@ public class GuestFileRepository implements GuestRepository{
             }
         }
         // If not found
+        return null;
+    }
+
+    @Override
+    public Guest delete(Guest guest) {
+
+        // Also need to delete all reservations that have the guest
+        // Likely do this purely in the data layer
+        // Can get a list of all reservations, will need to retain the host to use delete in repository function though
+        // Possibly add a field to reservation to know its host
+
+//        List<Reservation> allByHost = findReservationsForHost(host);
+//        for(int i = 0; i < allByHost.size(); i++) {
+//            if(allByHost.get(i).getId() == reservation.getId()) {
+//                allByHost.remove(i);
+//                writeAll(allByHost, host);
+//                return reservation;
+//            }
+//        }
         return null;
     }
 

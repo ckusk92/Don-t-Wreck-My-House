@@ -1,12 +1,10 @@
 package learn.dontWreckMyHouse.domain;
 
-import learn.dontWreckMyHouse.data.DataException;
-import learn.dontWreckMyHouse.data.HostRepository;
-import learn.dontWreckMyHouse.data.ReservationFileRepository;
-import learn.dontWreckMyHouse.data.ReservationRepository;
+import learn.dontWreckMyHouse.data.*;
 import learn.dontWreckMyHouse.models.Guest;
 import learn.dontWreckMyHouse.models.Host;
 import learn.dontWreckMyHouse.models.Reservation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.FileNotFoundException;
@@ -20,9 +18,14 @@ import java.util.stream.Collectors;
 @Service
 public class ReservationService {
 
-    private final ReservationRepository repository;
+    private ReservationRepository repository;
 
-    public ReservationService(ReservationRepository repository) {
+//    public ReservationService(ReservationRepository repository) {
+//        this.repository = repository;
+//    }
+
+    @Autowired
+    public void setRepository(ReservationRepository repository) {
         this.repository = repository;
     }
 
