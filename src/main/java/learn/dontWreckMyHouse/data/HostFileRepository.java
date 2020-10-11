@@ -86,8 +86,6 @@ public class HostFileRepository implements HostRepository {
             }
         }
 
-        // Will need to update totals in the reservation files if rates are changed
-
         // If not found
         return null;
     }

@@ -1,9 +1,6 @@
 package learn.dontWreckMyHouse.domain;
 
-import learn.dontWreckMyHouse.data.DataException;
-import learn.dontWreckMyHouse.data.GuestFileRepository;
-import learn.dontWreckMyHouse.data.HostFileRepository;
-import learn.dontWreckMyHouse.data.HostRepository;
+import learn.dontWreckMyHouse.data.*;
 import learn.dontWreckMyHouse.models.Guest;
 import learn.dontWreckMyHouse.models.Host;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +14,16 @@ import java.util.stream.Collectors;
 public class HostService {
 
     private HostRepository repository;
+    private ReservationRepository reservationRepository;
 
     @Autowired
     public void setRepository(HostRepository repository) {
         this.repository = repository;
+    }
+
+    @Autowired
+    public void setReservationRepository(ReservationRepository reservationRepository) {
+        this.reservationRepository = reservationRepository;
     }
 
     public List<Host> findByLastName(String prefix) {
@@ -30,6 +33,8 @@ public class HostService {
     }
 
     public List<Host> findAll() { return repository.findAll(); }  // Used for testing purposes
+
+    public Host findById(String id) { return repository.findById(id); }
 
     public Result<Host> add(Host host) throws DataException, IOException {
         List<Host> hosts = repository.findAll();
@@ -71,6 +76,55 @@ public class HostService {
         }
 
         result.setPayload(repository.add(host));
+
+        return result;
+    }
+
+    public Result<Host> update(Host host) throws DataException {
+        List<Host> hosts = repository.findAll();
+
+        Result<Host> result = new Result<>();
+
+        if(host == null) {
+            result.addErrorMessage("Host must not be null");
+            return result;
+        }
+
+        if(findById(host.getId()) == null) {
+            result.addErrorMessage("Host Id not found");
+        }
+        if(host.getLastName() == null || host.getLastName().isBlank()) {
+            result.addErrorMessage("Host last name is required");
+        }
+        if(host.getEmail() == null || host.getEmail().isBlank()) {
+            result.addErrorMessage("Host first name is required");
+        }
+        if(host.getPhone() == null || host.getPhone().isBlank()) {
+            result.addErrorMessage("Host phone number is required");
+        }
+        if(host.getAddress() == null || host.getAddress().isBlank()) {
+            result.addErrorMessage("Host address is required");
+        }
+        if(host.getCity() == null || host.getCity().isBlank()) {
+            result.addErrorMessage("Host city is required");
+        }
+        if(host.getState() == null || host.getState().isBlank()) {
+            result.addErrorMessage("Host state is required");
+        }
+
+        for(Host existingHost : hosts) {
+            if(existingHost.getEmail().equalsIgnoreCase(host.getEmail()) && (!existingHost.getId().equalsIgnoreCase(host.getId()))) {
+                result.addErrorMessage("email already exists for host");
+            }
+        }
+
+        if(!result.isSuccess()) {
+            return result;
+        }
+
+        // Need to change total in reservation incase rates change
+
+        result.setPayload(repository.update(host));
 
         return result;
     }

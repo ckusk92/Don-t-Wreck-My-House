@@ -99,4 +99,61 @@ public class HostServiceTest {
         assertFalse(result.isSuccess());
         assertEquals(10, service.findAll().size());
     }
+
+    @Test
+    void shouldUpdate() throws DataException {
+        Host host = new Host();
+        host.setLastName("Kusk");
+        host.setEmail("fake@fake.com");
+        host.setPhone("(398) 8675309");
+        host.setAddress("123 Fake Address");
+        host.setCity("Milwaukee");
+        host.setState("WI");
+        host.setPostalCode(53202);
+        host.setStandardRate(BigDecimal.valueOf(630));
+        host.setWeekendRate(BigDecimal.valueOf(820.25));
+        host.setId("3edda6bc-ab95-49a8-8962-d50b53f84b15");
+
+        Result<Host> result = service.update(host);
+        assertTrue(result.isSuccess());
+        assertEquals("Kusk", service.findById("3edda6bc-ab95-49a8-8962-d50b53f84b15").getLastName());
+    }
+
+    @Test
+    void shouldNotUpdateEmptyEmail() throws DataException {
+        Host host = new Host();
+        host.setLastName("Kusk");
+        host.setEmail("");
+        host.setPhone("(398) 8675309");
+        host.setAddress("123 Fake Address");
+        host.setCity("Milwaukee");
+        host.setState("WI");
+        host.setPostalCode(53202);
+        host.setStandardRate(BigDecimal.valueOf(630));
+        host.setWeekendRate(BigDecimal.valueOf(820.25));
+        host.setId("3edda6bc-ab95-49a8-8962-d50b53f84b15");
+
+        Result<Host> result = service.update(host);
+        assertFalse(result.isSuccess());
+        assertEquals("eyearnes0@sfgate.com", service.findById("3edda6bc-ab95-49a8-8962-d50b53f84b15").getEmail());
+    }
+
+    @Test
+    void shouldNotUpdateDuplicateEmail() throws DataException {
+        Host host = new Host();
+        host.setLastName("Kusk");
+        host.setEmail("krhodes1@posterous.com");
+        host.setPhone("(398) 8675309");
+        host.setAddress("123 Fake Address");
+        host.setCity("Milwaukee");
+        host.setState("WI");
+        host.setPostalCode(53202);
+        host.setStandardRate(BigDecimal.valueOf(630));
+        host.setWeekendRate(BigDecimal.valueOf(820.25));
+        host.setId("3edda6bc-ab95-49a8-8962-d50b53f84b15");
+
+        Result<Host> result = service.update(host);
+        assertFalse(result.isSuccess());
+        assertEquals("eyearnes0@sfgate.com", service.findById("3edda6bc-ab95-49a8-8962-d50b53f84b15").getEmail());
+    }
 }

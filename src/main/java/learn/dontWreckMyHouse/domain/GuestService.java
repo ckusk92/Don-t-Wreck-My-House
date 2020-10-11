@@ -53,7 +53,7 @@ public class GuestService {
         }
 
         if(guest.getEmail() == null || guest.getEmail().isBlank()) {
-            result.addErrorMessage("Guest first name is required");
+            result.addErrorMessage("Guest email is required");
         }
 
         // Should phone and state be required?

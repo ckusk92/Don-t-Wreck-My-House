@@ -217,8 +217,19 @@ public class Controller {
         }
     }
 
-    private void editHost() {
+    private void editHost() throws DataException {
+        view.displayHeader(MainMenuOption.EDIT_A_HOST.getMessage());
+        Host host = getHost();
+        if(host == null) { return; }
 
+        host = view.updateHost(host);
+        Result<Host> result = hostService.update(host);
+        if (!result.isSuccess()) {
+            view.displayStatus(false, result.getErrorMessages());
+        } else {
+            String successMessage = String.format("Host %s updated.", result.getPayload().getId());
+            view.displayStatus(true, successMessage);
+        }
     }
 
     private void deleteHost() {

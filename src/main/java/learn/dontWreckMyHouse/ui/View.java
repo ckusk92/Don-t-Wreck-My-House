@@ -67,8 +67,8 @@ public class View {
         host.setCity(io.readRequiredString("City: "));
         host.setState(io.readState("State (2 letter abbreviation): ", true));
         host.setPostalCode(io.readInt("Postal Code: ", 10000, 99999));
-        host.setStandardRate(io.readBigDecimal("Standard Rate: ", BigDecimal.TEN, BigDecimal.valueOf(10000)));
-        host.setWeekendRate(io.readBigDecimal("Weekend Rate: ", BigDecimal.TEN, BigDecimal.valueOf(10000)));
+        host.setStandardRate(io.readBigDecimal("Standard Rate: ", BigDecimal.ZERO, BigDecimal.valueOf(10000)));
+        host.setWeekendRate(io.readBigDecimal("Weekend Rate: ", BigDecimal.ZERO, BigDecimal.valueOf(10000)));
         host.setReservations(new ArrayList<>());
 
         return host;
@@ -106,6 +106,47 @@ public class View {
             guest.setState(state);
         }
         return guest;
+    }
+
+    public Host updateHost(Host host) {
+        String lastName = io.readString("Last Name: ");
+        if(lastName.trim().length() > 0) {
+            host.setLastName(lastName);
+        }
+        String email = io.readString("Email: ");
+        if(email.trim().length() > 0) {
+            host.setEmail(email);
+        }
+        String phone = io.readPhone("Phone (123) 4567890: ");
+        if(phone.trim().length() > 0) {
+            host.setPhone(phone);
+        }
+        String address = io.readString("Address: ");
+        if(email.trim().length() > 0) {
+            host.setAddress(address);
+        }
+        String city = io.readString("City: ");
+        if(email.trim().length() > 0) {
+            host.setEmail(city);
+        }
+        String state = io.readState("State (2 letter abbreviation): ", false);
+        if(state.trim().length() > 0) {
+            host.setState(state);
+        }
+        String postalCode = io.readString("Postal Code: ");
+        if(email.trim().length() > 0) {
+            host.setPostalCode(Integer.parseInt(postalCode));
+        }
+        String standardRate = io.readString("Standard Rate: ");
+        if(email.trim().length() > 0) {
+            host.setStandardRate(BigDecimal.valueOf(Integer.parseInt(standardRate)));
+        }
+        String weekendRate = io.readString("Weekend Rate: ");
+        if(email.trim().length() > 0) {
+            host.setWeekendRate(BigDecimal.valueOf(Integer.parseInt(weekendRate)));
+        }
+
+        return host;
     }
 
     public String getHostLastNamePrefix() {
