@@ -52,7 +52,7 @@ public class GuestService {
             result.addErrorMessage("Guest last name is required");
         }
 
-        if(guest.getEmail() == null || guest.getFirstName().isBlank()) {
+        if(guest.getEmail() == null || guest.getEmail().isBlank()) {
             result.addErrorMessage("Guest first name is required");
         }
 

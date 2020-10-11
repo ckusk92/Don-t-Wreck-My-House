@@ -67,7 +67,7 @@ public class HostRepositoryTest {
     }
 
     @Test
-    void shouldAdd() throws DataException {
+    void shouldAdd() throws DataException, IOException {
         Host host = new Host();
         host.setLastName("Kusk");
         host.setEmail("fake@fake.com");

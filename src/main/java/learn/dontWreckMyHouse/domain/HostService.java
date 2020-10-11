@@ -1,5 +1,6 @@
 package learn.dontWreckMyHouse.domain;
 
+import learn.dontWreckMyHouse.data.DataException;
 import learn.dontWreckMyHouse.data.GuestFileRepository;
 import learn.dontWreckMyHouse.data.HostFileRepository;
 import learn.dontWreckMyHouse.data.HostRepository;
@@ -8,6 +9,7 @@ import learn.dontWreckMyHouse.models.Host;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,5 +30,49 @@ public class HostService {
     }
 
     public List<Host> findAll() { return repository.findAll(); }  // Used for testing purposes
+
+    public Result<Host> add(Host host) throws DataException, IOException {
+        List<Host> hosts = repository.findAll();
+
+        Result<Host> result = new Result<>();
+
+        if(host == null) {
+            result.addErrorMessage("Host must not be null");
+            return result;
+        }
+        if(host.getLastName() == null || host.getLastName().isBlank()) {
+            result.addErrorMessage("Host last name is required");
+        }
+        if(host.getEmail() == null || host.getEmail().isBlank()) {
+            result.addErrorMessage("Host email is required");
+        }
+        if(host.getPhone() == null || host.getPhone().isBlank()) {
+            result.addErrorMessage("Host phone number is required");
+        }
+        if(host.getAddress() == null || host.getAddress().isBlank()) {
+            result.addErrorMessage("Host address is required");
+        }
+        if(host.getCity() == null || host.getCity().isBlank()) {
+            result.addErrorMessage("Host city is required");
+        }
+        if(host.getState() == null || host.getState().isBlank()) {
+            result.addErrorMessage("Host state is required");
+        }
+        // Not sure how to apply to int and BigDecimal, should never happen as IO functions will require them
+
+        for(Host existingHost : hosts) {
+            if(existingHost.getEmail().equalsIgnoreCase(host.getEmail())) {
+                result.addErrorMessage("Email already exists for host");
+            }
+        }
+
+        if(!result.isSuccess()) {
+            return result;
+        }
+
+        result.setPayload(repository.add(host));
+
+        return result;
+    }
 
 }

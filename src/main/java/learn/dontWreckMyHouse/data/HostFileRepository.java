@@ -54,7 +54,7 @@ public class HostFileRepository implements HostRepository {
     }
 
     @Override
-    public Host add(Host host) throws DataException {
+    public Host add(Host host) throws DataException, IOException {
 
         if (host == null) {
             return null;
@@ -66,6 +66,11 @@ public class HostFileRepository implements HostRepository {
 
         all.add(host);
         writeAll(all);
+        String newFileName = String.format("./data/reservations/%s.csv", host.getId());
+
+        // Create the file for new host
+        File newHost = new File(newFileName);
+        newHost.createNewFile();
 
         return host;
     }

@@ -13,6 +13,7 @@ import org.springframework.jmx.support.RegistrationPolicy;
 import org.springframework.stereotype.Component;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class Controller {
         this.view = view;
     }
 
-    public void run() {
+    public void run() throws IOException {
         view.displayHeader("Welcome to Don't Wreck My House");
         try {
             runAppLoop();
@@ -41,7 +42,7 @@ public class Controller {
         view.displayHeader("Goodbye.");
     }
 
-    private void runAppLoop() throws DataException, FileNotFoundException {
+    private void runAppLoop() throws DataException, IOException {
         MainMenuOption option;
         do {
             option = view.selectMainMenuOption();
@@ -107,7 +108,7 @@ public class Controller {
                 String successMessage = String.format("Reservation %s created.", result.getPayload().getId());
                 view.displayStatus(true, successMessage);
             } else {
-                // Call delete function on newly created reservation
+                // Call delete function on newly created reservation - STILL NEED TO FIGURE OUT
                 view.displayUserDenialMessage();
             }
         }
@@ -137,7 +138,6 @@ public class Controller {
                 String successMessage = String.format("Reservation %s edited.", result.getPayload().getId());
                 view.displayStatus(true, successMessage);
             } else {
-                // Call delete function on newly created reservation
                 view.displayUserDenialMessage();
             }
         }
@@ -206,8 +206,15 @@ public class Controller {
         }
     }
 
-    private void addHost() {
-
+    private void addHost() throws DataException, IOException {
+        Host host = view.makeHost();
+        Result<Host> result = hostService.add(host);
+        if (!result.isSuccess()) {
+            view.displayStatus(false, result.getErrorMessages());
+        } else {
+            String successMessage = String.format("Host %s created.", result.getPayload().getId());
+            view.displayStatus(true, successMessage);
+        }
     }
 
     private void editHost() {

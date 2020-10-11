@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,11 +51,27 @@ public class View {
         guest.setFirstName(io.readRequiredString("First Name: "));
         guest.setLastName(io.readRequiredString("Last Name: "));
         guest.setEmail(io.readRequiredString("Email: "));
-        // Need to create a readPhoneNumber io method
         guest.setPhone(io.readPhone("Phone (123) 4567890 : "));
         guest.setState(io.readState("State (2 letter abbreviation): ", false));
 
         return guest;
+    }
+
+    public Host makeHost() {
+        displayHeader(MainMenuOption.ADD_A_HOST.getMessage());
+        Host host = new Host();
+        host.setLastName(io.readRequiredString("Last Name: "));
+        host.setEmail(io.readRequiredString("Email: "));
+        host.setPhone(io.readPhone("Phone (123) 4567890 : "));
+        host.setAddress(io.readRequiredString("Address: "));
+        host.setCity(io.readRequiredString("City: "));
+        host.setState(io.readState("State (2 letter abbreviation): ", true));
+        host.setPostalCode(io.readInt("Postal Code: ", 10000, 99999));
+        host.setStandardRate(io.readBigDecimal("Standard Rate: ", BigDecimal.TEN, BigDecimal.valueOf(10000)));
+        host.setWeekendRate(io.readBigDecimal("Weekend Rate: ", BigDecimal.TEN, BigDecimal.valueOf(10000)));
+        host.setReservations(new ArrayList<>());
+
+        return host;
     }
 
     public Reservation updateReservation(Reservation reservation, LocalDate originalStart, LocalDate originalEnd) {

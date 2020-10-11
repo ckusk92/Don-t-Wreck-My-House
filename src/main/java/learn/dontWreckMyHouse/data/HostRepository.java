@@ -5,6 +5,7 @@ import learn.dontWreckMyHouse.models.Host;
 import learn.dontWreckMyHouse.models.Reservation;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 
 public interface HostRepository {
@@ -13,7 +14,7 @@ public interface HostRepository {
 
     Host findById(String id);
 
-    Host add(Host host) throws DataException;
+    Host add(Host host) throws DataException, IOException;
 
   //  List<Reservation> findReservationsForHost(Host host) throws FileNotFoundException;
 }

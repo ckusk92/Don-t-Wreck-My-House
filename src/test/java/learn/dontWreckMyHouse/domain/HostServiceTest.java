@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
@@ -40,5 +41,62 @@ public class HostServiceTest {
         List<Host> rLastNames = service.findByLastName("R");
         assertNotNull(rLastNames);
         assertEquals(2, rLastNames.size());
+    }
+
+    @Test
+    void shouldAdd() throws DataException, IOException {
+        Host host = new Host();
+        host.setLastName("Kusk");
+        host.setEmail("fake@fake.com");
+        host.setPhone("(398) 8675309");
+        host.setAddress("1646 Prospect Ave");
+        host.setCity("Milwaukee");
+        host.setState("WI");
+        host.setPostalCode(53202);
+        host.setStandardRate(BigDecimal.valueOf(630));
+        host.setWeekendRate(BigDecimal.valueOf(820.25));
+        host.setId(java.util.UUID.randomUUID().toString());
+
+        Result<Host> result = service.add(host);
+        assertTrue(result.isSuccess());
+        assertEquals(11, service.findAll().size());
+    }
+
+    @Test
+    void shouldNotAddBlankAddress() throws DataException, IOException {
+        Host host = new Host();
+        host.setLastName("Kusk");
+        host.setEmail("fake@fake.com");
+        host.setPhone("(398) 8675309");
+        host.setAddress("");
+        host.setCity("Milwaukee");
+        host.setState("WI");
+        host.setPostalCode(53202);
+        host.setStandardRate(BigDecimal.valueOf(630));
+        host.setWeekendRate(BigDecimal.valueOf(820.25));
+        host.setId(java.util.UUID.randomUUID().toString());
+
+        Result<Host> result = service.add(host);
+        assertFalse(result.isSuccess());
+        assertEquals(10, service.findAll().size());
+    }
+
+    @Test
+    void shouldNotAddDuplicateEmail() throws DataException, IOException {
+        Host host = new Host();
+        host.setLastName("Kusk");
+        host.setEmail("hvalasek5@fastcompany.com");
+        host.setPhone("(398) 8675309");
+        host.setAddress("1646 Prospect Ave");
+        host.setCity("Milwaukee");
+        host.setState("WI");
+        host.setPostalCode(53202);
+        host.setStandardRate(BigDecimal.valueOf(630));
+        host.setWeekendRate(BigDecimal.valueOf(820.25));
+        host.setId(java.util.UUID.randomUUID().toString());
+
+        Result<Host> result = service.add(host);
+        assertFalse(result.isSuccess());
+        assertEquals(10, service.findAll().size());
     }
 }
