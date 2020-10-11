@@ -5,9 +5,12 @@ import learn.dontWreckMyHouse.data.GuestFileRepository;
 import learn.dontWreckMyHouse.data.GuestRepository;
 import learn.dontWreckMyHouse.models.Guest;
 import learn.dontWreckMyHouse.models.Host;
+import learn.dontWreckMyHouse.models.Reservation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.FileNotFoundException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -115,7 +118,25 @@ public class GuestService {
         return result;
     }
 
+    public Result<Guest> remove(Guest guest) throws FileNotFoundException, DataException {
+        Result<Guest> result = new Result<>();
 
-    // For delete just search all reservations for guestId
+        if(guest == null) {
+            result.addErrorMessage("Guest must not be null");
+            return result;
+        }
+
+        if(!result.isSuccess()) {
+            return result;
+        }
+
+        if(repository.findById(guest.getId()) == null) {
+            result.addErrorMessage("Guest not found");
+        }
+
+        result.setPayload(repository.delete(guest));
+
+        return result;
+    }
 
 }

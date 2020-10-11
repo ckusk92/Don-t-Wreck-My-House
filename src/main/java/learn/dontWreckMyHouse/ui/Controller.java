@@ -192,8 +192,18 @@ public class Controller {
         }
     }
 
-    private void deleteGuest() {
-
+    private void deleteGuest() throws FileNotFoundException, DataException {
+        view.displayHeader(MainMenuOption.DELETE_A_GUEST.getMessage());
+        Guest guest = getGuest();
+        if(guest == null) { return; }
+        //guest = view.updateGuest(guest);
+        Result<Guest> result = guestService.remove(guest);
+        if (!result.isSuccess()) {
+            view.displayStatus(false, result.getErrorMessages());
+        } else {
+            String successMessage = String.format("Guest %s deleted.", result.getPayload().getId());
+            view.displayStatus(true, successMessage);
+        }
     }
 
     private void addHost() {

@@ -5,6 +5,7 @@ import learn.dontWreckMyHouse.models.Guest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -144,5 +145,34 @@ public class GuestServiceTest {
         assertNotNull(result);
         assertFalse(result.isSuccess());
         assertEquals("Sullivan", service.findById(1).getFirstName());
+    }
+
+    @Test
+    void shouldDelete() throws FileNotFoundException, DataException {
+        Guest guest = new Guest();
+        guest.setId(2);
+
+        int sizeBefore = service.findAll().size();
+        Result<Guest> result = service.remove(guest);
+        int sizeAfter = service.findAll().size();
+
+        assertNotNull(result);
+        assertTrue(result.isSuccess());
+        assertNull(service.findById(2));
+        assertEquals(1, sizeBefore - sizeAfter);
+    }
+
+    @Test
+    void shouldNotDelete() throws FileNotFoundException, DataException {
+        Guest guest = new Guest();
+        guest.setId(100);
+
+        int sizeBefore = service.findAll().size();
+        Result<Guest> result = service.remove(guest);
+        int sizeAfter = service.findAll().size();
+
+        assertNotNull(result);
+        assertFalse(result.isSuccess());
+        assertEquals(sizeBefore, sizeAfter);
     }
 }
