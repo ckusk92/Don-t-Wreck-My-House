@@ -18,5 +18,7 @@ public interface HostRepository {
 
     Host update(Host host) throws DataException;
 
+    Host delete(Host host) throws DataException, FileNotFoundException;
+
   //  List<Reservation> findReservationsForHost(Host host) throws FileNotFoundException;
 }

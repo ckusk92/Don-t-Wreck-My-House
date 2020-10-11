@@ -6,6 +6,7 @@ import learn.dontWreckMyHouse.models.Host;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -125,6 +126,27 @@ public class HostService {
         // Need to change total in reservation incase rates change
 
         result.setPayload(repository.update(host));
+
+        return result;
+    }
+
+    public Result<Host> remove(Host host) throws FileNotFoundException, DataException {
+        Result<Host> result = new Result<>();
+
+        if(host == null) {
+            result.addErrorMessage("Host must not be null");
+            return result;
+        }
+
+        if(!result.isSuccess()) {
+            return result;
+        }
+
+        if(repository.findById(host.getId()) == null) {
+            result.addErrorMessage("Host not found");
+        }
+
+        result.setPayload(repository.delete(host));
 
         return result;
     }

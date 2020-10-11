@@ -84,6 +84,23 @@ public class HostRepositoryDouble implements HostRepository {
         return null;
     }
 
+    @Override
+    public Host delete(Host host) throws DataException, FileNotFoundException {
+
+        List<Host> hosts = findAll();
+        for(int i = 0; i < hosts.size(); i++) {
+            if(hosts.get(i).getId() == host.getId()) {
+                String deleteFileName = String.format("./data/reservations-test/%s.csv", host.getId());
+                File deleteFile = new File(deleteFileName);
+                deleteFile.delete();
+                hosts.remove(i);
+                writeAll(hosts);
+                return host;
+            }
+        }
+        return null;
+    }
+
     private String serialize(Host host) {
         return String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s",
                 host.getId(),

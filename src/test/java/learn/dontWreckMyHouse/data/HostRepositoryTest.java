@@ -123,6 +123,28 @@ public class HostRepositoryTest {
         assertEquals("Yearnes", repository.findById("3edda6bc-ab95-49a8-8962-d50b53f84b15").getLastName());
     }
 
+    @Test
+    void shouldDelete() throws DataException, FileNotFoundException {
+        Host host = new Host();
+        host.setId("b4f38829-c663-48fc-8bf3-7fca47a7ae70");
+        int sizeBefore = repository.findAll().size();
+        Host result = repository.delete(host);
+        int sizeAfter = repository.findAll().size();
+        assertNotNull(result);
+        assertEquals(1, sizeBefore - sizeAfter);
+    }
+
+    @Test
+    void shouldNotDelete() throws DataException, FileNotFoundException {
+        Host host = new Host();
+        host.setId("c4f38829-c663-48fc-8bf3-7fca47a7ae70");
+        int sizeBefore = repository.findAll().size();
+        Host result = repository.delete(host);
+        int sizeAfter = repository.findAll().size();
+        assertNull(result);
+        assertEquals(sizeBefore, sizeAfter);
+    }
+
 //    @Test
 //    void shouldFindThirteenReservationsForHost() throws FileNotFoundException {
 //        Host host = repository.findById("2e25f6f7-3ef0-4f38-8a1a-2b5eea81409c");

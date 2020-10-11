@@ -85,6 +85,7 @@ public class Controller {
         view.displayHeader(MainMenuOption.VIEW_RESERVATIONS_FOR_HOST.getMessage());
         // Use getHost() to find which host to display reservations for
         Host host = getHost();
+        if(host == null) { return; }
         // Use service to get list of reservations
         List<Reservation> reservations = reservationService.reservationsForHost(host.getId());
         view.displayReservations(reservations, host);
@@ -196,7 +197,6 @@ public class Controller {
         view.displayHeader(MainMenuOption.DELETE_A_GUEST.getMessage());
         Guest guest = getGuest();
         if(guest == null) { return; }
-        //guest = view.updateGuest(guest);
         Result<Guest> result = guestService.remove(guest);
         if (!result.isSuccess()) {
             view.displayStatus(false, result.getErrorMessages());
@@ -232,8 +232,17 @@ public class Controller {
         }
     }
 
-    private void deleteHost() {
-
+    private void deleteHost() throws FileNotFoundException, DataException {
+        view.displayHeader(MainMenuOption.DELETE_A_HOST.getMessage());
+        Host host = getHost();
+        if(host == null) { return; }
+        Result<Host> result = hostService.remove(host);
+        if (!result.isSuccess()) {
+            view.displayStatus(false, result.getErrorMessages());
+        } else {
+            String successMessage = String.format("Host %s deleted.", result.getPayload().getId());
+            view.displayStatus(true, successMessage);
+        }
     }
 
     // Support Methods

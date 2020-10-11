@@ -1,10 +1,12 @@
 package learn.dontWreckMyHouse.domain;
 
 import learn.dontWreckMyHouse.data.*;
+import learn.dontWreckMyHouse.models.Guest;
 import learn.dontWreckMyHouse.models.Host;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
@@ -155,5 +157,36 @@ public class HostServiceTest {
         Result<Host> result = service.update(host);
         assertFalse(result.isSuccess());
         assertEquals("eyearnes0@sfgate.com", service.findById("3edda6bc-ab95-49a8-8962-d50b53f84b15").getEmail());
+    }
+
+    // As this test calls the service it is likely
+//    @Test
+//    void shouldDelete() throws FileNotFoundException, DataException {
+//        Host host = new Host();
+//        host.setId("b4f38829-c663-48fc-8bf3-7fca47a7ae70");
+//
+//        int sizeBefore = service.findAll().size();
+//        Result<Host> result = service.remove(host);
+//        int sizeAfter = service.findAll().size();
+//
+//        assertNotNull(result);
+//        assertTrue(result.isSuccess());
+//        assertNull(service.findById("b4f38829-c663-48fc-8bf3-7fca47a7ae70"));
+//        assertEquals(1, sizeBefore - sizeAfter);
+//    }
+
+    @Test
+    void shouldNotDelete() throws FileNotFoundException, DataException {
+        Host host = new Host();
+        host.setId("c4f38829-c663-48fc-8bf3-7fca47a7ae70");
+
+        int sizeBefore = service.findAll().size();
+        Result<Host> result = service.remove(host);
+        int sizeAfter = service.findAll().size();
+
+        assertNotNull(result);
+        assertFalse(result.isSuccess());
+        assertNotNull(service.findById("b4f38829-c663-48fc-8bf3-7fca47a7ae70"));
+        assertEquals(sizeBefore, sizeAfter);
     }
 }
