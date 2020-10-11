@@ -3,6 +3,7 @@ package learn.dontWreckMyHouse.data;
 import learn.dontWreckMyHouse.models.Guest;
 import learn.dontWreckMyHouse.models.Host;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 public interface GuestRepository {
@@ -15,5 +16,5 @@ public interface GuestRepository {
 
     Guest update(Guest guest) throws DataException;
 
-    Guest delete(Guest guest) throws DataException;
+    Guest delete(Guest guest) throws DataException, FileNotFoundException;
 }

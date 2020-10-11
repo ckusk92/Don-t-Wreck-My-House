@@ -20,7 +20,7 @@ public class GuestRepositoryTest {
 
     static final String SEED_PATH = "./data/guests-seed.csv";
     static final String TEST_PATH = "./data/guests-test.csv";
-    static final String TEST_REPOSITORY_PATH = "./data/reservation-test";
+    static final String TEST_REPOSITORY_PATH = "./data/reservations-test";
     static final int NEXT_ID = 11;
 
     GuestFileRepository repository = new GuestFileRepository();
@@ -111,23 +111,30 @@ public class GuestRepositoryTest {
     }
 
     @Test
-    void shouldDelete() throws DataException {
+    void shouldDelete() throws DataException, FileNotFoundException {
         Guest guest = new Guest();
-        guest.setId(1);
+        guest.setId(7);
+        int reservationSizeBefore = reservationFileRepository.findReservationsForHost("2e25f6f7-3ef0-4f38-8a1a-2b5eea81409c").size();
         int sizeBefore = repository.findAll().size();
         Guest result = repository.delete(guest);
         int sizeAfter = repository.findAll().size();
+        int reservationSizeAfter = reservationFileRepository.findReservationsForHost("2e25f6f7-3ef0-4f38-8a1a-2b5eea81409c").size();
         assertNotNull(result);
         assertEquals(1, sizeBefore - sizeAfter);
+        assertEquals(2, reservationSizeBefore - reservationSizeAfter);
     }
 
-    void shouldNotDelete() throws DataException {
+    @Test
+    void shouldNotDelete() throws DataException, FileNotFoundException {
         Guest guest = new Guest();
-        guest.setId(1000);
+        guest.setId(100000);
+        int reservationSizeBefore = reservationFileRepository.findReservationsForHost("2e25f6f7-3ef0-4f38-8a1a-2b5eea81409c").size();
         int sizeBefore = repository.findAll().size();
         Guest result = repository.delete(guest);
         int sizeAfter = repository.findAll().size();
+        int reservationSizeAfter = reservationFileRepository.findReservationsForHost("2e25f6f7-3ef0-4f38-8a1a-2b5eea81409c").size();
         assertNull(result);
         assertEquals(sizeBefore, sizeAfter);
+        assertEquals(reservationSizeBefore, reservationSizeAfter);
     }
 }

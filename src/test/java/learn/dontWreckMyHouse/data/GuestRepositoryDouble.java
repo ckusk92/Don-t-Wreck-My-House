@@ -1,6 +1,7 @@
 package learn.dontWreckMyHouse.data;
 
 import learn.dontWreckMyHouse.models.Guest;
+import learn.dontWreckMyHouse.models.Reservation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -96,16 +97,32 @@ public class GuestRepositoryDouble implements GuestRepository{
     }
 
     @Override
-    public Guest delete(Guest guest) throws DataException {
+    public Guest delete(Guest guest) throws DataException, FileNotFoundException {
+
+        // Also need to delete all reservations that have the guest
+        // Likely do this purely in the data layer
+        // Can get a list of all reservations, will need to retain the host to use delete in repository function though
+        // Possibly add a field to reservation to know its host
+
         List<Guest> guests = findAll();
         for(int i = 0; i < guests.size(); i++) {
             if(guests.get(i).getId() == guest.getId()) {
+                deleteGuestReservations(guest.getId());
                 guests.remove(i);
                 writeAll(guests);
                 return guest;
             }
         }
         return null;
+    }
+
+    private void deleteGuestReservations(int guestId) throws FileNotFoundException, DataException {
+        List<Reservation> reservations = reservationRepository.findAll();
+        for(Reservation reservation : reservations) {
+            if(reservation.getGuest().getId() == guestId) {
+                reservationRepository.deleteReservation(reservation, reservation.getHostId());
+            }
+        }
     }
 
     private String serialize(Guest guest) {

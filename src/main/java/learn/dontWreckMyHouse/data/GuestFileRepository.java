@@ -104,7 +104,7 @@ public class GuestFileRepository implements GuestRepository{
     }
 
     @Override
-    public Guest delete(Guest guest) throws DataException {
+    public Guest delete(Guest guest) throws DataException, FileNotFoundException {
 
         // Also need to delete all reservations that have the guest
         // Likely do this purely in the data layer
@@ -114,6 +114,7 @@ public class GuestFileRepository implements GuestRepository{
         List<Guest> guests = findAll();
         for(int i = 0; i < guests.size(); i++) {
             if(guests.get(i).getId() == guest.getId()) {
+                deleteGuestReservations(guest.getId());
                 guests.remove(i);
                 writeAll(guests);
                 return guest;
@@ -122,12 +123,11 @@ public class GuestFileRepository implements GuestRepository{
         return null;
     }
 
-    private void deleteGuestReservations(int guestId) {
+    private void deleteGuestReservations(int guestId) throws FileNotFoundException, DataException {
         List<Reservation> reservations = reservationRepository.findAll();
         for(Reservation reservation : reservations) {
             if(reservation.getGuest().getId() == guestId) {
-
-                //reservationRepository.deleteReservation(reservation, reservation.get);
+                reservationRepository.deleteReservation(reservation, reservation.getHostId());
             }
         }
     }
