@@ -75,49 +75,22 @@ public class HostFileRepository implements HostRepository {
         return host;
     }
 
-//    @Override
-//    public List<Reservation> findReservationsForHost(Host host) throws FileNotFoundException {
-//
-//        if(host == null) {
-//            return null;
-//        }
-//
-//        ArrayList<Reservation> reservations = new ArrayList<>();
-//
-//        String hostFileName = String.format("%s.csv", host.getId());
-//
-//        File dir = new File(reservationDirectory);
-//        File[] directoryListing = dir.listFiles();
-//        if(directoryListing != null) {
-//            // Loop through every file in reservations directory
-//            for(File child : directoryListing) {
-//                try(BufferedReader reader = new BufferedReader(new FileReader(child))) {
-//                    String fileName = child.getName();
-//                    // When we hit a match
-//                    if(fileName.equalsIgnoreCase(hostFileName)) {
-//                        // Read header line first
-//                        reader.readLine();
-//                        for(String line = reader.readLine(); line != null; line = reader.readLine()) {
-//                            String[] fields = line.split(",", -1);
-//                            if(fields.length == 5) {
-//                                reservations.add(deserializeReservation(fields));
-//                            } else {
-//                                return null;
-//                            }
-//                        }
-//                        // Should only be one file per host
-//                        break;
-//                    }
-//                } catch (IOException ex) {
-//                    // don't throw on read
-//                }
-//            }
-//        } else {
-//            return null;
-//        }
-//
-//        return reservations;
-//    }
+    @Override
+    public Host update(Host host) throws DataException {
+        List<Host> allHosts = findAll();
+        for (int i = 0; i < allHosts.size(); i++) {
+            if (allHosts.get(i).getId().equalsIgnoreCase(host.getId())) {
+                allHosts.set(i, host);
+                writeAll(allHosts);
+                return host;
+            }
+        }
+
+        // Will need to update totals in the reservation files if rates are changed
+
+        // If not found
+        return null;
+    }
 
     private String serialize(Host host) {
         return String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s",

@@ -85,6 +85,44 @@ public class HostRepositoryTest {
         assertEquals(11, repository.findAll().size());
     }
 
+    @Test
+    void shouldUpdate() throws DataException {
+        Host host = new Host();
+        host.setLastName("Kusk");
+        host.setEmail("fake@fake.com");
+        host.setPhone("(398) 8675309");
+        host.setAddress("123 Cool St");
+        host.setCity("Kilwaukee");
+        host.setState("WI");
+        host.setPostalCode(11111);
+        host.setStandardRate(BigDecimal.valueOf(200));
+        host.setWeekendRate(BigDecimal.valueOf(250));
+        host.setId("3edda6bc-ab95-49a8-8962-d50b53f84b15");
+
+        Host result = repository.update(host);
+        assertEquals(host, result);
+        assertEquals("Kusk", repository.findById("3edda6bc-ab95-49a8-8962-d50b53f84b15").getLastName());
+    }
+
+    @Test
+    void shouldNotUpdate() throws DataException {
+        Host host = new Host();
+        host.setLastName("Kusk");
+        host.setEmail("fake@fake.com");
+        host.setPhone("(398) 8675309");
+        host.setAddress("123 Cool St");
+        host.setCity("Kilwaukee");
+        host.setState("WI");
+        host.setPostalCode(11111);
+        host.setStandardRate(BigDecimal.valueOf(200));
+        host.setWeekendRate(BigDecimal.valueOf(250));
+        host.setId("4edda6bc-ab95-49a8-8962-d50b53f84b15");
+
+        Host result = repository.update(host);
+        assertNull(result);
+        assertEquals("Yearnes", repository.findById("3edda6bc-ab95-49a8-8962-d50b53f84b15").getLastName());
+    }
+
 //    @Test
 //    void shouldFindThirteenReservationsForHost() throws FileNotFoundException {
 //        Host host = repository.findById("2e25f6f7-3ef0-4f38-8a1a-2b5eea81409c");

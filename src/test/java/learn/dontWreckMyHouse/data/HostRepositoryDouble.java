@@ -70,6 +70,20 @@ public class HostRepositoryDouble implements HostRepository {
         return host;
     }
 
+    @Override
+    public Host update(Host host) throws DataException {
+        List<Host> allHosts = findAll();
+        for (int i = 0; i < allHosts.size(); i++) {
+            if (allHosts.get(i).getId().equalsIgnoreCase(host.getId())) {
+                allHosts.set(i, host);
+                writeAll(allHosts);
+                return host;
+            }
+        }
+        // If not found
+        return null;
+    }
+
     private String serialize(Host host) {
         return String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s",
                 host.getId(),
