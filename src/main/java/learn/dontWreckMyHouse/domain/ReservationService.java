@@ -29,8 +29,8 @@ public class ReservationService {
         this.repository = repository;
     }
 
-    public List<Reservation> reservationsForHost(Host host) throws FileNotFoundException {
-        List<Reservation> reservations = repository.findReservationsForHost(host);
+    public List<Reservation> reservationsForHost(String hostId) throws FileNotFoundException {
+        List<Reservation> reservations = repository.findReservationsForHost(hostId);
         List<Reservation> sorted = reservations.stream()
                 .sorted((a,b) -> a.getStartDate().compareTo(b.getStartDate()))
                 .collect(Collectors.toList());
@@ -40,7 +40,7 @@ public class ReservationService {
 
     public Result<Reservation> add(Reservation reservation, Host host) throws FileNotFoundException, DataException {
 
-        List<Reservation> hostReservations = reservationsForHost(host);
+        List<Reservation> hostReservations = reservationsForHost(host.getId());
         Result<Reservation> result = new Result<>();
 
         if(reservation == null) {
@@ -82,7 +82,7 @@ public class ReservationService {
 
     public Result<Reservation> update(Reservation reservation, Host host, LocalDate originalStart, LocalDate originalEnd) throws FileNotFoundException, DataException {
 
-        List<Reservation> hostReservations = reservationsForHost(host);
+        List<Reservation> hostReservations = reservationsForHost(host.getId());
         Result<Reservation> result = new Result<>();
 
         if(reservation == null) {
@@ -165,13 +165,13 @@ public class ReservationService {
             return result;
         }
 
-        result.setPayload(repository.deleteReservation(reservation, host));
+        result.setPayload(repository.deleteReservation(reservation, host.getId()));
 
         return result;
     }
 
     public List<Reservation> findForHostAndGuest(Host host, Guest guest) throws FileNotFoundException {
-        List<Reservation> hostReservations = reservationsForHost(host);
+        List<Reservation> hostReservations = reservationsForHost(host.getId());
         ArrayList<Reservation> guestReservations = new ArrayList<>();
 
         for(Reservation reservation : hostReservations) {

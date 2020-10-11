@@ -23,7 +23,7 @@ public class GuestRepositoryTest {
     static final String TEST_REPOSITORY_PATH = "./data/reservation-test";
     static final int NEXT_ID = 11;
 
-    GuestRepositoryDouble repository = new GuestRepositoryDouble();
+    GuestFileRepository repository = new GuestFileRepository();
     ReservationFileRepository reservationFileRepository = new ReservationFileRepository();
 
     public GuestRepositoryTest(){
@@ -108,5 +108,26 @@ public class GuestRepositoryTest {
         Guest result = repository.update(guest);
         assertNull(result);
         assertEquals("Sullivan", repository.findById(1).getFirstName());
+    }
+
+    @Test
+    void shouldDelete() throws DataException {
+        Guest guest = new Guest();
+        guest.setId(1);
+        int sizeBefore = repository.findAll().size();
+        Guest result = repository.delete(guest);
+        int sizeAfter = repository.findAll().size();
+        assertNotNull(result);
+        assertEquals(1, sizeBefore - sizeAfter);
+    }
+
+    void shouldNotDelete() throws DataException {
+        Guest guest = new Guest();
+        guest.setId(1000);
+        int sizeBefore = repository.findAll().size();
+        Guest result = repository.delete(guest);
+        int sizeAfter = repository.findAll().size();
+        assertNull(result);
+        assertEquals(sizeBefore, sizeAfter);
     }
 }

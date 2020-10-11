@@ -85,7 +85,7 @@ public class Controller {
         // Use getHost() to find which host to display reservations for
         Host host = getHost();
         // Use service to get list of reservations
-        List<Reservation> reservations = reservationService.reservationsForHost(host);
+        List<Reservation> reservations = reservationService.reservationsForHost(host.getId());
         view.displayReservations(reservations, host);
         view.enterToContinue();
     }

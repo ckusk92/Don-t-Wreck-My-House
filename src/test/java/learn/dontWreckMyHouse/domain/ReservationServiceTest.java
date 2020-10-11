@@ -55,7 +55,7 @@ public class ReservationServiceTest {
         Host rosenkranc = new Host();
         rosenkranc.setLastName("Rosenkrank");
         rosenkranc.setId("2e25f6f7-3ef0-4f38-8a1a-2b5eea81409c");
-        List<Reservation> reservations = service.reservationsForHost(rosenkranc);
+        List<Reservation> reservations = service.reservationsForHost(rosenkranc.getId());
         assertNotNull(reservations);
         assertEquals(13, reservations.size());
     }
@@ -266,9 +266,9 @@ public class ReservationServiceTest {
         reservation.setStartDate(LocalDate.of(2021,6,9));
         reservation.setEndDate(LocalDate.of(2021,6,12));
 
-        int sizeBefore = service.reservationsForHost(host).size();
+        int sizeBefore = service.reservationsForHost(host.getId()).size();
         Result<Reservation> result = service.remove(reservation, host);
-        int sizeAfter = service.reservationsForHost(host).size();
+        int sizeAfter = service.reservationsForHost(host.getId()).size();
 
         assertTrue(result.isSuccess());
         assertEquals(1, sizeBefore - sizeAfter);
@@ -284,9 +284,9 @@ public class ReservationServiceTest {
         reservation.setStartDate(LocalDate.of(2020,5,22));
         reservation.setEndDate(LocalDate.of(2020,5,28));
 
-        int sizeBefore = service.reservationsForHost(host).size();
+        int sizeBefore = service.reservationsForHost(host.getId()).size();
         Result<Reservation> result = service.remove(reservation, host);
-        int sizeAfter = service.reservationsForHost(host).size();
+        int sizeAfter = service.reservationsForHost(host.getId()).size();
 
         assertFalse(result.isSuccess());
         assertEquals(sizeBefore, sizeAfter);
@@ -302,9 +302,9 @@ public class ReservationServiceTest {
         reservation.setStartDate(LocalDate.of(2020,10,7));
         reservation.setEndDate(LocalDate.of(2020,10,17));
 
-        int sizeBefore = service.reservationsForHost(host).size();
+        int sizeBefore = service.reservationsForHost(host.getId()).size();
         Result<Reservation> result = service.remove(reservation, host);
-        int sizeAfter = service.reservationsForHost(host).size();
+        int sizeAfter = service.reservationsForHost(host.getId()).size();
 
         assertFalse(result.isSuccess());
         assertEquals(sizeBefore, sizeAfter);

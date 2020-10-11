@@ -48,7 +48,7 @@ public class ReservationRepositoryTest {
     void shouldFindThirteenReservations() throws FileNotFoundException {
         Host host = new Host();
         host.setId("2e25f6f7-3ef0-4f38-8a1a-2b5eea81409c");
-        List<Reservation> reservations = repository.findReservationsForHost(host);
+        List<Reservation> reservations = repository.findReservationsForHost(host.getId());
         assertNotNull(reservations);
         assertEquals(13, reservations.size());
     }
@@ -64,7 +64,7 @@ public class ReservationRepositoryTest {
     void shouldReturnNull() throws FileNotFoundException {
         Host host = new Host();
         host.setId("2e25f6f7-3ef0-4f38-8a1a-2b5eea81409e");
-        List<Reservation> reservations = repository.findReservationsForHost(host);
+        List<Reservation> reservations = repository.findReservationsForHost(host.getId());
         assertNull(reservations);
     }
 
@@ -85,7 +85,7 @@ public class ReservationRepositoryTest {
 
         Reservation result = repository.add(reservation, host);
         assertEquals(reservation, result);
-        assertEquals(14, repository.findReservationsForHost(host).size());
+        assertEquals(14, repository.findReservationsForHost(host.getId()).size());
     }
 
     @Test
@@ -105,7 +105,7 @@ public class ReservationRepositoryTest {
 
         Reservation result = repository.update(reservation, host);
         assertEquals(result, reservation);
-        assertEquals(8, repository.findReservationsForHost(host).get(4).getGuest().getId());
+        assertEquals(8, repository.findReservationsForHost(host.getId()).get(4).getGuest().getId());
     }
 
     @Test
@@ -134,9 +134,9 @@ public class ReservationRepositoryTest {
         Reservation reservation = new Reservation();
         reservation.setId(5);
 
-        int sizeBefore = repository.findReservationsForHost(host).size();
-        Reservation result = repository.deleteReservation(reservation, host);
-        int sizeAfter = repository.findReservationsForHost(host).size();
+        int sizeBefore = repository.findReservationsForHost(host.getId()).size();
+        Reservation result = repository.deleteReservation(reservation, host.getId());
+        int sizeAfter = repository.findReservationsForHost(host.getId()).size();
         assertNotNull(result);
         assertEquals(1, sizeBefore - sizeAfter);
     }
@@ -149,9 +149,9 @@ public class ReservationRepositoryTest {
         Reservation reservation = new Reservation();
         reservation.setId(1000);
 
-        int sizeBefore = repository.findReservationsForHost(host).size();
-        Reservation result = repository.deleteReservation(reservation, host);
-        int sizeAfter = repository.findReservationsForHost(host).size();
+        int sizeBefore = repository.findReservationsForHost(host.getId()).size();
+        Reservation result = repository.deleteReservation(reservation, host.getId());
+        int sizeAfter = repository.findReservationsForHost(host.getId()).size();
         assertNull(result);
         assertEquals(0, sizeBefore - sizeAfter);
     }

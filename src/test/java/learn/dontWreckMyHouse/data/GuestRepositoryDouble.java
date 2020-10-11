@@ -96,8 +96,15 @@ public class GuestRepositoryDouble implements GuestRepository{
     }
 
     @Override
-    public Guest delete(Guest guest) {
-
+    public Guest delete(Guest guest) throws DataException {
+        List<Guest> guests = findAll();
+        for(int i = 0; i < guests.size(); i++) {
+            if(guests.get(i).getId() == guest.getId()) {
+                guests.remove(i);
+                writeAll(guests);
+                return guest;
+            }
+        }
         return null;
     }
 

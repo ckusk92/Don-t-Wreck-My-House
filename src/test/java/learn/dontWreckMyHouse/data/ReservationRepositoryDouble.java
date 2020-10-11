@@ -34,15 +34,15 @@ public class ReservationRepositoryDouble implements ReservationRepository{
     }
 
     @Override
-    public List<Reservation> findReservationsForHost(Host host) throws FileNotFoundException {
+    public List<Reservation> findReservationsForHost(String hostId) throws FileNotFoundException {
 
-        if(host == null) {
+        if(hostId == null) {
             return null;
         }
 
         ArrayList<Reservation> reservations = new ArrayList<>();
 
-        String hostFileName = String.format("%s.csv", host.getId());
+        String hostFileName = String.format("%s.csv", hostId);
         boolean hostFileFound = false;
         File dir = new File(reservationTestDirectory);
         File[] directoryListing = dir.listFiles();
@@ -90,7 +90,7 @@ public class ReservationRepositoryDouble implements ReservationRepository{
             return null;
         }
 
-        List<Reservation> allForHost = findReservationsForHost(host);
+        List<Reservation> allForHost = findReservationsForHost(host.getId());
 
         int nextId = allForHost.stream()
                 .mapToInt(Reservation::getId)
@@ -99,18 +99,18 @@ public class ReservationRepositoryDouble implements ReservationRepository{
 
         reservation.setId(nextId);
         allForHost.add(reservation);
-        writeAll(allForHost, host);
+        writeAll(allForHost, host.getId());
 
         return reservation;
     }
 
     @Override
     public Reservation update(Reservation reservation, Host host) throws DataException, FileNotFoundException {
-        List<Reservation> allByHost = findReservationsForHost(host);
+        List<Reservation> allByHost = findReservationsForHost(host.getId());
         for (int i = 0; i < allByHost.size(); i++) {
             if (allByHost.get(i).getId() == reservation.getId()) {
                 allByHost.set(i, reservation);
-                writeAll(allByHost, host);
+                writeAll(allByHost, host.getId());
                 return reservation;
             }
         }
@@ -118,12 +118,12 @@ public class ReservationRepositoryDouble implements ReservationRepository{
     }
 
     @Override
-    public Reservation deleteReservation(Reservation reservation, Host host) throws FileNotFoundException, DataException {
-        List<Reservation> allByHost = findReservationsForHost(host);
+    public Reservation deleteReservation(Reservation reservation, String hostId) throws FileNotFoundException, DataException {
+        List<Reservation> allByHost = findReservationsForHost(hostId);
         for(int i = 0; i < allByHost.size(); i++) {
             if(allByHost.get(i).getId() == reservation.getId()) {
                 allByHost.remove(i);
-                writeAll(allByHost, host);
+                writeAll(allByHost, hostId);
                 return reservation;
             }
         }
@@ -162,10 +162,10 @@ public class ReservationRepositoryDouble implements ReservationRepository{
         return result;
     }
 
-    protected void writeAll(List<Reservation> reservations, Host host) throws DataException {
+    protected void writeAll(List<Reservation> reservations, String hostId) throws DataException {
 
         // Need it to write to reservations-test for testing function
-        String filePath = String.format("%s/%s.csv", reservationTestDirectory, host.getId());
+        String filePath = String.format("%s/%s.csv", reservationTestDirectory, hostId);
 
         try (PrintWriter writer = new PrintWriter(filePath)) {
 
