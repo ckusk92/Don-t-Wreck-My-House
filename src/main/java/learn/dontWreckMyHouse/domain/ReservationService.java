@@ -20,10 +20,6 @@ public class ReservationService {
 
     private ReservationRepository repository;
 
-//    public ReservationService(ReservationRepository repository) {
-//        this.repository = repository;
-//    }
-
     @Autowired
     public void setRepository(ReservationRepository repository) {
         this.repository = repository;

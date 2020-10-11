@@ -14,10 +14,6 @@ public class HostRepositoryDouble implements HostRepository {
     private static final String HEADER = "id,last_name,email,phone,address,city,state,postal_code,standard_rate,weekend_rate";
     private String filePath;
 
-//    public HostRepositoryDouble(@Value("./data/hosts-test.csv") String filePath) {
-//        this.filePath = filePath;
-//    }
-
     @Autowired
     public void setFilePath(@Value("./data/hosts-test.csv") String filePath) {
         this.filePath = filePath;

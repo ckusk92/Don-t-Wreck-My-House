@@ -21,11 +21,6 @@ public class ReservationFileRepository implements ReservationRepository {
     private String reservationDirectory;
     private GuestRepository guestRepository;
 
-//    public ReservationFileRepository(@Value("./data/reservations") String reservationDirectory, GuestRepository guestRepository) {
-//        this.reservationDirectory = reservationDirectory;
-//        this.guestRepository = guestRepository;
-//    }
-
     @Autowired
     public void setReservationDirectory(@Value("./data/reservations") String reservationDirectory) {
         this.reservationDirectory = reservationDirectory;

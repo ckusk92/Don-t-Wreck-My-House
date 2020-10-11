@@ -19,10 +19,6 @@ public class GuestService {
 
     private GuestRepository repository;
 
-//    public GuestService(GuestRepository repository) {
-//        this.repository = repository;
-//    }
-
     @Autowired
     public void setRepository(GuestRepository repository) {
         this.repository = repository;

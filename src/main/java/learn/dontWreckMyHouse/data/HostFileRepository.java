@@ -18,23 +18,11 @@ public class HostFileRepository implements HostRepository {
 
     private static final String HEADER = "id,last_name,email,phone,address,city,state,postal_code,standard_rate,weekend_rate";
     private String filePath;
-    //private ReservationFileRepository reservationDirectory;
-
-//    public HostFileRepository(@Value("./data/hosts.csv") String filePath, ReservationFileRepository reservationDirectory) {
-//        this.filePath = filePath;
-//        this.reservationDirectory = reservationDirectory;
-//
-//    }
 
     @Autowired
     public void setFilePath(@Value("./data/hosts.csv") String filePath) {
         this.filePath = filePath;
     }
-
-//    @Autowired
-//    public void setReservationDirectory(ReservationFileRepository reservationDirectory) {
-//        this.reservationDirectory = reservationDirectory;
-//    }
 
     @Override
     public List<Host> findAll() {

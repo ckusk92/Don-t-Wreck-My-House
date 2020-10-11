@@ -20,10 +20,8 @@ public class GuestServiceTest {
     static final String TEST_PATH = "./data/guests-test.csv";
     static final String RESERVATION_TEST_DIR = "./data/reservations-test";
 
-    //GuestService service = new GuestService(new GuestFileRepository(TEST_PATH));
     GuestRepositoryDouble guestRepository = new GuestRepositoryDouble();
     ReservationRepositoryDouble reservationRepository = new ReservationRepositoryDouble();
-    //GuestService service = new GuestService(new GuestFileRepository());
     GuestService service = new GuestService();
 
     public GuestServiceTest() {

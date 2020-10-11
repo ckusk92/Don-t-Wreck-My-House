@@ -18,16 +18,6 @@ public class GuestFileRepository implements GuestRepository{
     private String filePath;
     private ReservationRepository reservationRepository;
 
-//    public GuestFileRepository(@Value("./data/guests.csv") String filePath, ReservationRepository reservationRepository) {
-//        this.filePath = filePath;
-//        this.reservationRepository = reservationRepository;
-//    }
-
-//    @Autowired
-//    public void setFilePath(@Value("./data/guests.csv") String filePath) {
-//        this.filePath = filePath;
-//    }
-
     @Autowired
     public void setFilePath(@Value("./data/guests.csv")String filePath) {
         this.filePath = filePath;
@@ -105,11 +95,6 @@ public class GuestFileRepository implements GuestRepository{
 
     @Override
     public Guest delete(Guest guest) throws DataException, FileNotFoundException {
-
-        // Also need to delete all reservations that have the guest
-        // Likely do this purely in the data layer
-        // Can get a list of all reservations, will need to retain the host to use delete in repository function though
-        // Possibly add a field to reservation to know its host
 
         List<Guest> guests = findAll();
         for(int i = 0; i < guests.size(); i++) {

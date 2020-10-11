@@ -16,10 +16,6 @@ public class HostService {
 
     private HostRepository repository;
 
-//    public HostService(HostRepository repository) {
-//        this.repository = repository;
-//    }
-
     @Autowired
     public void setRepository(HostRepository repository) {
         this.repository = repository;

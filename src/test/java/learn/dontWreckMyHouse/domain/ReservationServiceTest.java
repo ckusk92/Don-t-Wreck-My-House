@@ -27,10 +27,6 @@ public class ReservationServiceTest {
     static final String TEST_DIR_PATH = "./data/reservations-test";
     static final String GUEST_TEST_PATH = "./data/guests-test.csv";
 
-    //ReservationService service = new ReservationService(new ReservationRepositoryDouble(TEST_FILE_PATH, new GuestRepositoryDouble(GUEST_TEST_PATH)));
-    // Running into problem of directory being null
-    //ReservationService service = new ReservationService(new ReservationRepositoryDouble(TEST_DIR_PATH, new GuestRepositoryDouble(GUEST_TEST_PATH)));
-    //ReservationService service = new ReservationService(new ReservationFileRepository());
     ReservationRepositoryDouble reservationRepository = new ReservationRepositoryDouble();
     GuestRepositoryDouble guestRepository = new GuestRepositoryDouble();
     ReservationService service = new ReservationService();

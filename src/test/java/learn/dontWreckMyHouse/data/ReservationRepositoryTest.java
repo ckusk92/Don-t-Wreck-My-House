@@ -26,7 +26,6 @@ public class ReservationRepositoryTest {
     static final String TEST_DIR_PATH = "./data/reservations-test";
     static final String GUEST_TEST_PATH = "./data/guests-test.csv";
 
-    //ReservationFileRepository repository = new ReservationFileRepository(TEST_DIR_PATH, new GuestFileRepository(GUEST_TEST_PATH, repository));
     ReservationFileRepository repository = new ReservationFileRepository();
     GuestFileRepository guestFileRepository = new GuestFileRepository();
 

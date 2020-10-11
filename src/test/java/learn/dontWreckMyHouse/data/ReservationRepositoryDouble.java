@@ -18,11 +18,6 @@ public class ReservationRepositoryDouble implements ReservationRepository{
     private String reservationTestDirectory;
     private GuestRepository guestRepository;
 
-//    public ReservationRepositoryDouble(@Value("./data/reservations-test") String reservationTestDirectory, GuestRepositoryDouble guestRepositoryDouble) {
-//        this.reservationTestDirectory = reservationTestDirectory;
-//        this.guestRepositoryDouble = guestRepositoryDouble;
-//    }
-
     @Autowired
     public void setReservationTestDirectory(@Value("./data/reservations-test") String reservationDirectory) {
         this.reservationTestDirectory = reservationDirectory;
